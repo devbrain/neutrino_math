@@ -2,11 +2,11 @@
 // Created by igor on 8/11/24.
 //
 #include <doctest/doctest.h>
-#include <math/vector.hh>
+#include <math/math.hh>
 
 
-#define vector2D neutrino::sdl::math::vector_2d
-#define vector3D neutrino::sdl::math::vector_3d
+#define vector2D neutrino::math::vector_2d
+#define vector3D neutrino::math::vector_3d
 
 TEST_SUITE("Test vector 2d") {
     TEST_CASE("Constructors") {
@@ -243,9 +243,18 @@ TEST_SUITE("Test vector 2d") {
         vector2D <double> v1, v2, v3;
         v2.load(1, 2);
         v3.load(3, -2);
-        v1 = neutrino::sdl::math::elem_prod(v2, v3);
+        v1 = neutrino::math::elem_prod(v2, v3);
         REQUIRE_EQ(3, v1.x);
         REQUIRE_EQ(-4, v1.y);
+    }
+
+    TEST_CASE("Element_Wise_product 2") {
+        vector2D <double> v1, v2, v3;
+        v2.load(1, 2);
+        v3.load(3, -2);
+        v1 = neutrino::math::elem_prod(v2, -v3);
+        REQUIRE_EQ(-3, v1.x);
+        REQUIRE_EQ(4, v1.y);
     }
 
     TEST_CASE("Element_Wise_division") {
@@ -679,7 +688,7 @@ TEST_SUITE("Test vector 3d") {
         vector3D <double> v1, v2, v3;
         v2.load(1, 2, 3);
         v3.load(3, -2, 1);
-        v1 = neutrino::sdl::math::elem_prod(v2, v3);
+        v1 = neutrino::math::elem_prod(v2, v3);
         REQUIRE_EQ(3, v1.x);
         REQUIRE_EQ(-4, v1.y);
         REQUIRE_EQ(3, v1.z);

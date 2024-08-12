@@ -2,16 +2,17 @@
 // Created by igor on 8/11/24.
 //
 
-#ifndef NEUTRINO_SDLPP_MATH_VECTOR_EXPRESSION_HH
-#define NEUTRINO_SDLPP_MATH_VECTOR_EXPRESSION_HH
+#ifndef NEUTRINO_MATH_VECTOR_EXPRESSION_HH
+#define NEUTRINO_MATH_VECTOR_EXPRESSION_HH
 
 // https://github.com/cdelv/Vector3D/blob/main/vector.h
 
 #include <type_traits>
 #include <complex>
 #include <cmath>
+#include <math/deprecated/detail/value_holder.hh>
 
-namespace neutrino::sdl::math {
+namespace neutrino::math {
     template<typename T>
     struct is_complex : std::false_type {
     };
@@ -256,9 +257,9 @@ namespace neutrino::sdl::math {
     };
 }
 
-#include <math/detail/vector_functions.hh>
+#include <math/deprecated/detail/vector_functions.hh>
 
-namespace neutrino::sdl::math {
+namespace neutrino::math {
     // Normalization
     template<typename E1, typename E2, std::size_t N>
     class vec_normalization : public vector_expression <vec_normalization <E1, E2, N>, N> {
