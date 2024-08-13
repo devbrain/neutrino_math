@@ -3,7 +3,6 @@
 //
 #include <doctest/doctest.h>
 #include <math/vector.hh>
-#include <math/detail/vector_expr.hh>
 
 // #include <vector>
 // #include <chrono>

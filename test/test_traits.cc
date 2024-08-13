@@ -30,7 +30,7 @@ TEST_SUITE("Test traits") {
         using uexpr_t = decltype(v);
         using vt = decltype(v0);
         REQUIRE(is_vector_expression_v<uexpr_t>);
-        REQUIRE_EQ(3, detail::size_traits<std::decay_t<uexpr_t>>::size());
+        REQUIRE_EQ(3, size_v<uexpr_t>);
         REQUIRE(detail::is_compatible_size_v<vt, uexpr_t>);
         REQUIRE_FALSE(test_size(v1, 1));
         REQUIRE_FALSE(test_size(v1, v0));

@@ -141,28 +141,16 @@ namespace neutrino::math {
             }
     };
 
+    template<typename T>
+    struct size_traits <detail::temp_value_holder <T>> {
+        static constexpr size_t size() {
+            return T::size();
+        }
+    };
+
     namespace detail {
-        template<typename T>
-        struct size_traits {
-            static constexpr size_t size() {
-                if constexpr (is_vector_or_vector_exp_v <T>) {
-                    return T::size();
-                } else {
-                    return 1;
-                }
-            }
-        };
-
-        template<typename T>
-        struct size_traits <temp_value_holder <T>> {
-            static constexpr size_t size() {
-                return T::size();
-            }
-        };
-
         template<class LHS, class RHS>
-        constexpr bool is_compatible_size_v = size_traits <std::decay_t <LHS>>::size() == size_traits <std::decay_t <
-                                                  RHS>>::size();
+        constexpr bool is_compatible_size_v = size_v <LHS> == size_v<RHS>;
 
         template<class Callable, class LHS, class RHS>
         auto make_binary_vector_expr(Callable* callable, LHS&& lhs, RHS&& rhs) {
@@ -272,12 +260,10 @@ namespace neutrino::math {
             }
         };
 
-
-
         struct unary_sec {
             template<typename A>
             static auto call(const A& x) {
-                return A{1}/std::sin(x);
+                return A{1} / std::sin(x);
             }
         };
 
@@ -298,7 +284,7 @@ namespace neutrino::math {
         struct unary_cosec {
             template<typename A>
             static auto call(const A& x) {
-                return A{1}/std::cos(x);
+                return A{1} / std::cos(x);
             }
         };
 
@@ -340,7 +326,7 @@ namespace neutrino::math {
         struct unary_inv {
             template<typename A>
             static auto call(const A& x) {
-                return A{1}/x;
+                return A{1} / x;
             }
         };
 
@@ -494,7 +480,7 @@ namespace neutrino::math {
         struct unary_invsqrt {
             template<typename A>
             static auto call(const A& x) {
-                return A{1}/std::sqrt(x);
+                return A{1} / std::sqrt(x);
             }
         };
 
@@ -508,21 +494,21 @@ namespace neutrino::math {
         struct unary_invcbrt {
             template<typename A>
             static auto call(const A& x) {
-                return A{1}/std::cbrt(x);
+                return A{1} / std::cbrt(x);
             }
         };
 
         struct unary_pow2 {
             template<typename A>
             static auto call(const A& x) {
-                return x*x;
+                return x * x;
             }
         };
 
         struct unary_invpow2 {
             template<typename A>
             static auto call(const A& x) {
-                return A{1}/x*x;
+                return A{1} / x * x;
             }
         };
     }
@@ -623,7 +609,7 @@ namespace neutrino::math {
     auto sum(LHS&& lhs) {
         using lhs_t = element_type_t <LHS>;
         lhs_t out = {};
-        constexpr std::size_t size = detail::size_traits <std::decay_t <LHS>>::size();
+        constexpr std::size_t size = size_v<LHS>;
         for (std::size_t i = 0; i < size; i++) {
             out += lhs[i];
         }
@@ -712,7 +698,6 @@ namespace neutrino::math {
     d_MATH_VEC1(invcbrt)
     d_MATH_VEC1(pow2)
     d_MATH_VEC1(invpow2)
-
 }
 
 #if defined(PPCAT_NX)

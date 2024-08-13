@@ -41,14 +41,14 @@ namespace neutrino::math {
                 z = z_val;
             }
 
-            template<class Expr, class = std::enable_if_t <is_vector_expression_v <Expr> && detail::size_traits<Expr>::size() == size()>>
+            template<class Expr, class = std::enable_if_t <is_vector_expression_v <Expr> && size_v<Expr> == size()>>
             constexpr vector(Expr const& expr) noexcept {
                 x = expr[0];
                 y = expr[1];
                 z = expr[2];
             }
 
-            template<class Expr, class = std::enable_if_t <is_vector_expression_v <Expr> && detail::size_traits<Expr>::size() == size()>>
+            template<class Expr, class = std::enable_if_t <is_vector_expression_v <Expr> && size_v<Expr> == size()>>
             vector& operator=(Expr const& expr) {
                 x = expr[0];
                 y = expr[1];
@@ -100,13 +100,13 @@ template<typename T>
                 y = y_val;
             }
 
-            template<class Expr, class = std::enable_if_t <is_vector_expression_v <Expr> && detail::size_traits<Expr>::size() == size()>>
+            template<class Expr, class = std::enable_if_t <is_vector_expression_v <Expr> && size_v<Expr> == size()>>
             constexpr vector(Expr const& expr) noexcept {
                 x = expr[0];
                 y = expr[1];
             }
 
-            template<class Expr, class = std::enable_if_t <is_vector_expression_v <Expr> && detail::size_traits<Expr>::size() == size()>>
+            template<class Expr, class = std::enable_if_t <is_vector_expression_v <Expr> && size_v<Expr> == size()>>
             vector& operator=(Expr const& expr) {
                 x = expr[0];
                 y = expr[1];

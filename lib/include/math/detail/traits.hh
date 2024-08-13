@@ -53,6 +53,20 @@ namespace neutrino::math {
     template<typename T, class = std::enable_if_t<is_vector_or_vector_exp_v<T>>>
     using element_type_t = std::decay_t<decltype(std::declval<std::decay_t<T>&>()[std::size_t{}])>;
 
+    template<typename T>
+        struct size_traits {
+        static constexpr size_t size() {
+            if constexpr (is_vector_or_vector_exp_v <T>) {
+                return T::size();
+            } else {
+                return 1;
+            }
+        }
+    };
+
+    template<typename T>
+    static constexpr auto size_v = size_traits<std::decay_t<T>>::size();
+
 }
 
 #endif
