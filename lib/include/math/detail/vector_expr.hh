@@ -6,7 +6,6 @@
 #define NEUTRINO_MATH_VECTOR_EXPR_HH
 
 #include <cstddef>
-#include <iostream>
 #include <math/detail/traits.hh>
 
 #if defined(PPCAT_NX)
@@ -633,6 +632,11 @@ namespace neutrino::math {
         return std::sqrt(norm2(std::forward <LHS>(lhs)));
     }
 
+    template<class LHS, class = std::enable_if_t <is_vector_or_vector_exp_v <LHS>>>
+    auto normalize(LHS&& lhs) {
+        return std::forward <LHS>(lhs) / norm(std::forward <LHS>(lhs));
+    }
+
     template<class LHS, class RHS, class = std::enable_if_t <
                  is_vector_or_vector_exp_v <LHS> && is_vector_or_vector_exp_v <RHS> && detail::is_compatible_size_v <
                      LHS, RHS>>>
@@ -641,6 +645,7 @@ namespace neutrino::math {
                              std::forward <RHS>(rhs) / (norm(std::forward <LHS>(lhs)) * norm(
                                                             std::forward <RHS>(rhs)))));
     }
+
 
     // ================================================================================================
     // Common math functions

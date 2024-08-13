@@ -246,6 +246,13 @@ TEST_SUITE("test vector exp") {
         v2.load(10, 2, 0);
         REQUIRE_EQ(doctest::Approx(std::acos((-3 * 10 + 4) / (std::sqrt(13) * std::sqrt(104)))), angle(v1, v2));
     }
+    TEST_CASE("normalize") {
+        neutrino::math::vector <double, 2> v1{10, 0};
+        neutrino::math::vector <double, 2> v2 = normalize(v1);
+        REQUIRE_EQ(doctest::Approx(1), v2.x);
+        REQUIRE_EQ(0, v2.y);
+        REQUIRE_EQ(doctest::Approx(1), norm2(v2));
+    }
 
     TEST_CASE("trigo") {
         neutrino::math::vector <double, 2> v1{M_PI/3, M_PI/4} ;
@@ -279,6 +286,7 @@ TEST_SUITE("test vector exp") {
         REQUIRE_EQ(1, s2.y);
         REQUIRE_EQ(0, s2.z);
     }
+
     // TEST_CASE("test loop") {
     //     std::vector <int> x(VEC_SIZE, 1);
     //     const auto s_time = funcTime(simple_for_driver, x);
