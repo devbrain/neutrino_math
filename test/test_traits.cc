@@ -2,9 +2,7 @@
 // Created by igor on 8/12/24.
 //
 #include <doctest/doctest.h>
-#include <math/detail/traits.hh>
-#include <math/vector.hh>
-#include <math/detail/vector_expr.hh>
+#include <math/math.hh>
 #include <vector>
 
 

@@ -5,7 +5,7 @@
 #ifndef NEUTRINO_MATH_HH
 #define NEUTRINO_MATH_HH
 
-#include <math/deprecated/vector.hh>
-#include <math/deprecated/detail/matrix_operations.hh>
-#include <math/deprecated/detail/vector_operations.hh>
+#include <math/vector.hh>
+#include <math/detail/vector_ops.hh>
+
 #endif
