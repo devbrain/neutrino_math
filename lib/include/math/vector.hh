@@ -97,7 +97,7 @@ template<typename T>
             constexpr vector& operator=(const vector& other) noexcept = default;
             constexpr vector& operator=(vector&& other) noexcept = default;
 
-            constexpr void load(const T x_val, const T y_val, const T z_val) noexcept {
+            constexpr void load(const T x_val, const T y_val) noexcept {
                 x = x_val;
                 y = y_val;
             }
