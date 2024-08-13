@@ -12,7 +12,7 @@ namespace neutrino::math {
     class vector;
 
     struct vector_expression_base {};
-    struct vector_functor_expression_base {};
+
 }
 
 #endif

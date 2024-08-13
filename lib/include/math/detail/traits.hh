@@ -41,11 +41,8 @@ namespace neutrino::math {
     template <typename T>
     constexpr bool is_vector_v = detail::traits<std::decay_t<T>>::is_vector;
 
-    template <typename T>
-    constexpr bool is_vector_functor_v = std::is_base_of_v<vector_functor_expression_base, std::decay_t<T>>;
-
     template<typename T>
-    static constexpr bool is_scalar_v = std::is_arithmetic_v <T> || detail::is_complex <T>::value || is_vector_functor_v<T>;
+    static constexpr bool is_scalar_v = std::is_arithmetic_v <T> || detail::is_complex <T>::value;
 
     template<typename T>
     static constexpr bool is_vector_expression_v = std::is_base_of_v<vector_expression_base, std::decay_t<T>>;

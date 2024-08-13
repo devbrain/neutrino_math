@@ -9,6 +9,16 @@
 #include <iostream>
 #include <math/detail/traits.hh>
 
+#if defined(PPCAT_NX)
+#   undef PPCAT_NX
+#endif
+#if defined(PPCAT)
+#   undef PPCAT
+#endif
+
+#define PPCAT_NX(A, B) A ## B
+#define PPCAT(A, B) PPCAT_NX(A, B)
+
 namespace neutrino::math {
     namespace detail {
         template<typename T, bool store_ref>
@@ -70,7 +80,6 @@ namespace neutrino::math {
     class binary_vector_expression : public vector_expression_base {
         detail::storage_type_t <LHS> lhs;
         detail::storage_type_t <RHS> rhs;
-        //callable f_;
 
         public:
             explicit binary_vector_expression([[maybe_unused]] callable* f, LHS const& lhs_, RHS const& rhs_)
@@ -129,26 +138,6 @@ namespace neutrino::math {
                 } else {
                     return v;
                 }
-            }
-    };
-
-    template<class Callable, class LHS>
-    class functor_vector_expression : public vector_functor_expression_base {
-        detail::storage_type_t <LHS> lhs;
-
-        public:
-            using T = element_type_t <LHS>;
-
-            explicit functor_vector_expression([[maybe_unused]] Callable* f, LHS const& lhs_)
-                : lhs(lhs_) {
-            }
-
-            static constexpr std::size_t size() {
-                return LHS::size();
-            }
-
-            operator T() const {
-                return Callable::template call(lhs);
             }
     };
 
@@ -228,24 +217,6 @@ namespace neutrino::math {
                 };
             }
         }
-
-        template<class Callable, class LHS>
-        auto make_functor_vector_expr(Callable* callable, LHS&& lhs) {
-            constexpr auto is_lhs_rvalue = std::is_rvalue_reference_v <decltype(lhs)>;
-            constexpr auto is_lhs_vec = is_vector_v <LHS>;
-
-            if constexpr (is_lhs_vec && is_lhs_rvalue) {
-                return functor_vector_expression{
-                    callable,
-                    detail::temp_value_holder <std::decay_t <LHS>>(std::forward <LHS>(lhs))
-                };
-            } else {
-                return functor_vector_expression{
-                    callable,
-                    lhs
-                };
-            }
-        }
     }
 
     // ================================================================================================================
@@ -294,16 +265,264 @@ namespace neutrino::math {
             }
         };
 
-        struct functor_sum {
+        struct unary_sin {
             template<typename A>
             static auto call(const A& x) {
-                using lhs_t = element_type_t <A>;
-                lhs_t out = {};
-                constexpr std::size_t size = detail::size_traits <std::decay_t <A>>::size();
-                for (std::size_t i = 0; i < size; i++) {
-                    out += x[i];
-                }
-                return out;
+                return std::sin(x);
+            }
+        };
+
+
+
+        struct unary_sec {
+            template<typename A>
+            static auto call(const A& x) {
+                return A{1}/std::sin(x);
+            }
+        };
+
+        struct unary_asin {
+            template<typename A>
+            static auto call(const A& x) {
+                return std::asin(x);
+            }
+        };
+
+        struct unary_cos {
+            template<typename A>
+            static auto call(const A& x) {
+                return std::cos(x);
+            }
+        };
+
+        struct unary_cosec {
+            template<typename A>
+            static auto call(const A& x) {
+                return A{1}/std::cos(x);
+            }
+        };
+
+        struct unary_acos {
+            template<typename A>
+            static auto call(const A& x) {
+                return std::acos(x);
+            }
+        };
+
+        struct unary_tan {
+            template<typename A>
+            static auto call(const A& x) {
+                return std::tan(x);
+            }
+        };
+
+        struct unary_atan {
+            template<typename A>
+            static auto call(const A& x) {
+                return std::atan(x);
+            }
+        };
+
+        struct unary_cotan {
+            template<typename A>
+            static auto call(const A& x) {
+                return std::sin(x) / std::cos(x);
+            }
+        };
+
+        struct unary_acotan {
+            template<typename A>
+            static auto call(const A& x) {
+                return M_PI_2 - std::atan(x);
+            }
+        };
+
+        struct unary_inv {
+            template<typename A>
+            static auto call(const A& x) {
+                return A{1}/x;
+            }
+        };
+
+        struct unary_exp {
+            template<typename A>
+            static auto call(const A& x) {
+                return std::exp(x);
+            }
+        };
+
+        struct unary_exp2 {
+            template<typename A>
+            static auto call(const A& x) {
+                return std::exp2(x);
+            }
+        };
+
+        struct unary_log {
+            template<typename A>
+            static auto call(const A& x) {
+                return std::log(x);
+            }
+        };
+
+        struct unary_log2 {
+            template<typename A>
+            static auto call(const A& x) {
+                return std::log2(x);
+            }
+        };
+
+        struct unary_log10 {
+            template<typename A>
+            static auto call(const A& x) {
+                return std::log10(x);
+            }
+        };
+
+        struct unary_sinh {
+            template<typename A>
+            static auto call(const A& x) {
+                return std::sinh(x);
+            }
+        };
+
+        struct unary_asinh {
+            template<typename A>
+            static auto call(const A& x) {
+                return std::asinh(x);
+            }
+        };
+
+        struct unary_cosh {
+            template<typename A>
+            static auto call(const A& x) {
+                return std::cosh(x);
+            }
+        };
+
+        struct unary_acosh {
+            template<typename A>
+            static auto call(const A& x) {
+                return std::acosh(x);
+            }
+        };
+
+        struct unary_tanh {
+            template<typename A>
+            static auto call(const A& x) {
+                return std::tanh(x);
+            }
+        };
+
+        struct unary_atanh {
+            template<typename A>
+            static auto call(const A& x) {
+                return std::atanh(x);
+            }
+        };
+
+        struct unary_abs {
+            template<typename A>
+            static auto call(const A& x) {
+                return std::abs(x);
+            }
+        };
+
+        struct unary_ceil {
+            template<typename A>
+            static auto call(const A& x) {
+                return std::ceil(x);
+            }
+        };
+
+        struct unary_floor {
+            template<typename A>
+            static auto call(const A& x) {
+                return std::floor(x);
+            }
+        };
+
+        struct unary_round {
+            template<typename A>
+            static auto call(const A& x) {
+                return std::round(x);
+            }
+        };
+
+        struct unary_sgn {
+            template<typename A>
+            static auto call(const A& x) {
+                return x == A{0} ? 0 : std::signbit(x) ? -1 : 1;
+            }
+        };
+
+        struct unary_signbit {
+            template<typename A>
+            static auto call(const A& x) {
+                return std::signbit(x);
+            }
+        };
+
+        struct unary_isfinite {
+            template<typename A>
+            static auto call(const A& x) {
+                return std::isfinite(x);
+            }
+        };
+
+        struct unary_isnan {
+            template<typename A>
+            static auto call(const A& x) {
+                return std::isnan(x);
+            }
+        };
+
+        struct unary_isinf {
+            template<typename A>
+            static auto call(const A& x) {
+                return std::isnan(x);
+            }
+        };
+
+        struct unary_sqrt {
+            template<typename A>
+            static auto call(const A& x) {
+                return std::sqrt(x);
+            }
+        };
+
+        struct unary_invsqrt {
+            template<typename A>
+            static auto call(const A& x) {
+                return A{1}/std::sqrt(x);
+            }
+        };
+
+        struct unary_cbrt {
+            template<typename A>
+            static auto call(const A& x) {
+                return std::cbrt(x);
+            }
+        };
+
+        struct unary_invcbrt {
+            template<typename A>
+            static auto call(const A& x) {
+                return A{1}/std::cbrt(x);
+            }
+        };
+
+        struct unary_pow2 {
+            template<typename A>
+            static auto call(const A& x) {
+                return x*x;
+            }
+        };
+
+        struct unary_invpow2 {
+            template<typename A>
+            static auto call(const A& x) {
+                return A{1}/x*x;
             }
         };
     }
@@ -411,11 +630,6 @@ namespace neutrino::math {
         return out;
     }
 
-    template<class LHS, class = std::enable_if_t <is_vector_or_vector_exp_v <LHS>>>
-    auto sum2(LHS&& lhs) {
-        return detail::make_functor_vector_expr(static_cast <vector_ops::functor_sum*>(nullptr), std::forward <LHS>(lhs));;
-    }
-
     template<class LHS, class RHS, class = std::enable_if_t <
                  is_vector_or_vector_exp_v <LHS> && is_vector_or_vector_exp_v <RHS> && detail::is_compatible_size_v <
                      LHS, RHS>>>
@@ -441,6 +655,71 @@ namespace neutrino::math {
                              std::forward <RHS>(rhs) / (norm(std::forward <LHS>(lhs)) * norm(
                                                             std::forward <RHS>(rhs)))));
     }
+
+    // ================================================================================================
+    // Common math functions
+    // ================================================================================================
+#define d_MATH_VEC1(NAME)                                                                                                        \
+    template<class LHS>                                                                                                          \
+    auto NAME(LHS&& lhs, std::enable_if_t <is_vector_or_vector_exp_v <LHS>>* = nullptr) {                                        \
+        return detail::make_unary_vector_expr(static_cast <vector_ops::PPCAT(unary_, NAME)*>(nullptr), std::forward <LHS>(lhs)); \
+    }                                                                                                                            \
+                                                                                                                                 \
+    template<class LHS>                                                                                                          \
+    auto NAME(LHS&& lhs, std::enable_if_t <is_scalar_v <LHS>>* = nullptr) {                                                      \
+        return detail::make_unary_vector_expr(static_cast <vector_ops::PPCAT(unary_, NAME)*>(nullptr), std::forward <LHS>(lhs)); \
+    }
+
+    d_MATH_VEC1(inv) // x -> 1/x
+    d_MATH_VEC1(exp)
+    d_MATH_VEC1(exp2)
+    d_MATH_VEC1(log)
+    d_MATH_VEC1(log2)
+    d_MATH_VEC1(log10)
+
+    d_MATH_VEC1(sin)
+    d_MATH_VEC1(asin)
+    d_MATH_VEC1(sec)
+    d_MATH_VEC1(cos)
+    d_MATH_VEC1(cosec)
+    d_MATH_VEC1(acos)
+    d_MATH_VEC1(tan)
+    d_MATH_VEC1(atan)
+    d_MATH_VEC1(cotan)
+    d_MATH_VEC1(acotan)
+
+    d_MATH_VEC1(sinh)
+    d_MATH_VEC1(asinh)
+    d_MATH_VEC1(cosh)
+    d_MATH_VEC1(acosh)
+    d_MATH_VEC1(tanh)
+    d_MATH_VEC1(atanh)
+
+    d_MATH_VEC1(abs)
+    d_MATH_VEC1(ceil)
+    d_MATH_VEC1(floor)
+    d_MATH_VEC1(round)
+
+    d_MATH_VEC1(sgn)
+    d_MATH_VEC1(signbit)
+    d_MATH_VEC1(isnan)
+    d_MATH_VEC1(isfinite)
+    d_MATH_VEC1(isinf)
+
+    d_MATH_VEC1(sqrt)
+    d_MATH_VEC1(invsqrt) // x -> 1/sqrt(x)
+    d_MATH_VEC1(cbrt)
+    d_MATH_VEC1(invcbrt)
+    d_MATH_VEC1(pow2)
+    d_MATH_VEC1(invpow2)
+
 }
+
+#if defined(PPCAT_NX)
+#   undef PPCAT_NX
+#endif
+#if defined(PPCAT)
+#   undef PPCAT
+#endif
 
 #endif

@@ -193,16 +193,6 @@ TEST_SUITE("test vector exp") {
         constexpr neutrino::math::vector <int, 3> v0 = {10, 20, 30};
         auto s0 = sum(v0);
         REQUIRE_EQ(10+20+30, s0);
-
-        auto s00 = sum2(v0);
-        REQUIRE_EQ(10+20+30, s00);
-
-        int s01 = sum2(v0);
-        REQUIRE_EQ(10+20+30, s01);
-
-        auto s1 = sum(v0 * 3);
-        REQUIRE_EQ(3*(10+20+30), s1);
-
     }
 
     TEST_CASE("test dot") {
@@ -256,6 +246,39 @@ TEST_SUITE("test vector exp") {
         v1.load(-3, 2, 0);
         v2.load(10, 2, 0);
         REQUIRE_EQ(doctest::Approx(std::acos((-3 * 10 + 4) / (std::sqrt(13) * std::sqrt(104)))), angle(v1, v2));
+    }
+
+    TEST_CASE("trigo") {
+        neutrino::math::vector <double, 2> v1{M_PI/3, M_PI/4} ;
+
+        neutrino::math::vector <double, 2> v2 = pow2(sin(v1)) + pow2(cos(v1));
+        REQUIRE_EQ(doctest::Approx(1), v2.x);
+        REQUIRE_EQ(doctest::Approx(1), v2.y);
+
+        neutrino::math::vector <double, 2> v3 = tan(v1);
+        neutrino::math::vector <double, 2> v4 = sin(v1) / cos(v1);
+        neutrino::math::vector <double, 2> v5 = sin(v1) * inv(cos(v1));
+        neutrino::math::vector <double, 2> v6 = sin(v1) * cosec(v1);
+        REQUIRE_EQ(doctest::Approx(v3.x), v4.x);
+        REQUIRE_EQ(doctest::Approx(v3.y), v4.y);
+        REQUIRE_EQ(doctest::Approx(v3.x), v5.x);
+        REQUIRE_EQ(doctest::Approx(v3.y), v5.y);
+        REQUIRE_EQ(doctest::Approx(v3.x), v6.x);
+        REQUIRE_EQ(doctest::Approx(v3.y), v6.y);
+
+        neutrino::math::vector <bool, 2> finite = isfinite(v3);
+        REQUIRE(finite.x);
+        REQUIRE(finite.y);
+
+        neutrino::math::vector <double, 2> v7{M_PI + M_PI/3, M_PI/4} ;
+        neutrino::math::vector <bool, 2> s = signbit(sin(v7));
+        REQUIRE(s.x);
+        REQUIRE_FALSE(s.y);
+        neutrino::math::vector <double, 3> v8{M_PI + M_PI/3, M_PI/4, 0} ;
+        neutrino::math::vector <int, 3> s2 = sgn(sin(v8));
+        REQUIRE_EQ(-1, s2.x );
+        REQUIRE_EQ(1, s2.y);
+        REQUIRE_EQ(0, s2.z);
     }
     // TEST_CASE("test loop") {
     //     std::vector <int> x(VEC_SIZE, 1);
