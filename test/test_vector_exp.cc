@@ -68,8 +68,19 @@ static auto makeExpr3(neutrino::math::vector <int, 3> const& v0, neutrino::math:
 }
 
 TEST_SUITE("test vector exp") {
+    TEST_CASE("test construct") {
+        neutrino::math::vector<int, 5> v(10);
+        for (int i = 0; i<5; i++) {
+            REQUIRE(v[i] == 10);
+        }
+        neutrino::math::vector<int, 6> v1(1, 2, 3, 4, 5, 6);
+        for (int i = 0; i<5; i++) {
+            REQUIRE(v1[i] == i+1);
+        }
+    }
     TEST_CASE("test trivial") {
-        const neutrino::math::vector <int, 3> v1(1, 2, 3);
+        //std::initializer_list<int> args = {1, 2, 3};
+        const neutrino::math::vector <int, 3> v1{1, 2, 3};;
         const neutrino::math::vector <int, 3> v2(10, 12, 13);
         const neutrino::math::vector <int, 3> v3 = v1 + v2;
 
@@ -285,6 +296,27 @@ TEST_SUITE("test vector exp") {
         REQUIRE_EQ(-1, s2.x );
         REQUIRE_EQ(1, s2.y);
         REQUIRE_EQ(0, s2.z);
+    }
+
+    TEST_CASE("test == ") {
+        constexpr neutrino::math::vector <int, 3> v0 = {10, 20, 30};
+        constexpr neutrino::math::vector <int, 3> v1 = v0;
+        const  neutrino::math::vector <int, 3> v2 = 10*v0;
+
+        REQUIRE(v1 == v0);
+        REQUIRE_EQ(v2, 10*v0);
+    }
+
+    TEST_CASE("test += ") {
+        neutrino::math::vector <int, 3> v0 = {10, 20, 30};
+        neutrino::math::vector <int, 3> v2 = {10, 10, 10};
+        neutrino::math::vector <int, 3> v3 = v0;
+        const neutrino::math::vector <int, 3> v1 = v0 + 10;
+        v3 += 10;
+        v0 += v2;
+
+        REQUIRE_EQ(v3,  v1);
+        REQUIRE_EQ(v0, v1);
     }
 
     // TEST_CASE("test loop") {

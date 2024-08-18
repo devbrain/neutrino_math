@@ -6,6 +6,15 @@ add_library(neutrino_math INTERFACE
         include/math/vector.hh
         include/math/vector_fwd.hh
         include/math/detail/vector_ops.hh
+        include/math/matrix_fwd.hh
+        include/math/matrix.hh
+        include/math/detail/array_utils.hh
+        include/math/detail/matrix_expr.hh
+        include/math/detail/matrix_ops.hh
+        include/math/detail/matrix_traits.hh
+        include/math/detail/scalar.hh
+        include/math/lin_alg/projection.hh
+        include/math/detail/matrix_access.hh
 )
 
 add_library(neutrino::math ALIAS neutrino_math)

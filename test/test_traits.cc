@@ -14,10 +14,10 @@ auto test_size([[maybe_unused]] LHS&& lhs, [[maybe_unused]] RHS&& rhs) {
 TEST_SUITE("Test traits") {
     TEST_CASE("test vector traits") {
         using namespace neutrino::math;
-        REQUIRE_FALSE(detail::traits<std::vector<int>>::is_vector);
+        REQUIRE_FALSE(detail::traits<std::vector<int>>::type == detail::math_object_t::VECTOR);
         REQUIRE_FALSE(detail::traits<std::vector<int>>::is_leaf);
 
-        REQUIRE(detail::traits<vector<int, 3>>::is_vector);
+        REQUIRE(detail::traits<vector<int, 3>>::type == detail::math_object_t::VECTOR);
         REQUIRE(detail::traits<vector<int, 3>>::is_leaf);
 
         constexpr vector<int, 3> v0 = {10, 20, 30};

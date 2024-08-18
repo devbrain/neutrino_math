@@ -30,6 +30,8 @@ namespace neutrino::math {
         template<typename T>
         using storage_type_t = typename storage_type <std::decay_t <T>, store_by_ref_v <T>>::type;
 
+
+
         template<typename T>
         class temp_value_holder {
             private:
@@ -132,7 +134,7 @@ namespace neutrino::math {
     };
 
     template<typename T>
-    struct size_traits <detail::temp_value_holder <T>> {
+    struct vector_size_traits <detail::temp_value_holder <T>> {
         static constexpr size_t size() {
             return T::size();
         }

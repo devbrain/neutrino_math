@@ -305,7 +305,18 @@ namespace neutrino::math::vector_fn {
         struct unary_invpow2 {
             template<typename A>
             static auto call(const A& x) {
-                return A{1} / x * x;
+                return A{1} / (x * x);
+            }
+        };
+
+        struct unary_conjugate {
+            template<typename A>
+            static auto call(const A& x) {
+                if constexpr (detail::is_complex_v<A>) {
+                    return std::conj(x);
+                } else {
+                    return x;
+                }
             }
         };
     }

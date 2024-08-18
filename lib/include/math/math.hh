@@ -7,5 +7,9 @@
 
 #include <math/vector.hh>
 #include <math/detail/vector_ops.hh>
+#include <math/matrix.hh>
+#include <math/detail/matrix_ops.hh>
+#include <math/detail/matrix_access.hh>
+#include <math/lin_alg/projection.hh>
 
 #endif

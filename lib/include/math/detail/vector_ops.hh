@@ -5,8 +5,12 @@
 #ifndef NEUTRINO_MATH_VECTOR_OPS_HH
 #define NEUTRINO_MATH_VECTOR_OPS_HH
 
+#include <iostream>
+#include <sstream>
 #include <math/detail/vector_functors.hh>
 #include <math/detail/vector_expr.hh>
+#include <math/detail/scalar.hh>
+
 #if defined(PPCAT_NX)
 #   undef PPCAT_NX
 #endif
@@ -18,14 +22,19 @@
 #define PPCAT(A, B) PPCAT_NX(A, B)
 
 namespace neutrino::math {
-// ================================================================================================================
+    // ================================================================================================================
     // Operators
     // ================================================================================================================
-
 
     template<class LHS, class = std::enable_if_t <is_vector_or_vector_exp_v <LHS>>>
     auto negate(LHS&& lhs) {
         return detail::make_unary_vector_expr(static_cast <vector_fn::unary_minus*>(nullptr), std::forward <LHS>(lhs));
+    }
+
+    template<class LHS, class = std::enable_if_t <is_vector_or_vector_exp_v <LHS>, op_vector>>
+    auto conj(LHS&& lhs) {
+        return detail::make_unary_vector_expr(static_cast <vector_fn::unary_conjugate*>(nullptr),
+                                              std::forward <LHS>(lhs));
     }
 
     // ----------------------------------------------------------------------------------------------------------------
@@ -117,10 +126,9 @@ namespace neutrino::math {
     // ================================================================================================================
     template<class LHS, class = std::enable_if_t <is_vector_or_vector_exp_v <LHS>>>
     auto sum(LHS&& lhs) {
-        using lhs_t = element_type_t <LHS>;
-        lhs_t out = {};
+        auto out = lhs[0];
         constexpr std::size_t size = size_v <LHS>;
-        for (std::size_t i = 0; i < size; i++) {
+        for (std::size_t i = 1; i < size; i++) {
             out += lhs[i];
         }
         return out;
@@ -163,12 +171,12 @@ namespace neutrino::math {
 #define d_MATH_VEC1(NAME)                                                                                                        \
     template<class LHS>                                                                                                          \
     auto NAME(LHS&& lhs, std::enable_if_t <is_vector_or_vector_exp_v <LHS>>* = nullptr) {                                        \
-        return detail::make_unary_vector_expr(static_cast <vector_fn::PPCAT(unary_, NAME)*>(nullptr), std::forward <LHS>(lhs)); \
+        return detail::make_unary_vector_expr(static_cast <vector_fn::PPCAT(unary_, NAME)*>(nullptr), std::forward <LHS>(lhs));  \
     }                                                                                                                            \
                                                                                                                                  \
     template<class LHS>                                                                                                          \
     auto NAME(LHS&& lhs, std::enable_if_t <is_scalar_v <LHS>>* = nullptr) {                                                      \
-        return detail::make_unary_vector_expr(static_cast <vector_fn::PPCAT(unary_, NAME)*>(nullptr), std::forward <LHS>(lhs)); \
+        return detail::make_unary_vector_expr(static_cast <vector_fn::PPCAT(unary_, NAME)*>(nullptr), std::forward <LHS>(lhs));  \
     }
 
     d_MATH_VEC1(inv) // x -> 1/x
@@ -216,6 +224,157 @@ namespace neutrino::math {
 
     // ===========================================================================
 
+    template<typename Derived, std::size_t N>
+    struct generic_vector_ops {
+
+        auto operator()(std::size_t idx) const {
+            return get(idx);
+        }
+
+        // ---------------------------------------------------------------------------------
+        // Equals
+        // ---------------------------------------------------------------------------------
+        template<typename T, class = std::enable_if_t <
+                     (is_vector_or_vector_exp_v <T> && size_v <T> == N) || is_scalar_v <T>>>
+        [[nodiscard]] bool equals(const T& other) const {
+            for (std::size_t i = 0; i < Derived::size(); i++) {
+                if (!detail::scalar::equals(get(i), subscript(other, i))) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        template<typename T, class = std::enable_if_t <
+                     (is_vector_or_vector_exp_v <T> && size_v <T> == N) || is_scalar_v <T>>>
+        [[nodiscard]] int compare(const T& other) const {
+            for (std::size_t i = 0; i < Derived::size(); i++) {
+                const auto oth = subscript(other, i);
+                if (get(i) < oth) {
+                    return -1;
+                } else if (get(i) > oth) {
+                    return 1;
+                }
+            }
+            return 0;
+        }
+
+        template<typename T, class = std::enable_if_t <
+                     (is_vector_or_vector_exp_v <T> && size_v <T> == N) || is_scalar_v <T>>>
+        friend bool operator ==(const Derived& a, const T& b) {
+            return a.equals(b);
+        }
+
+        template<typename T, class = std::enable_if_t <
+                     (is_vector_or_vector_exp_v <T> && size_v <T> == N) || is_scalar_v <T>>>
+        friend bool operator ==(const T& a, const Derived& b) {
+            return a.equals(b);
+        }
+
+        friend bool operator ==(const Derived& a, const Derived& b) {
+            return a.equals(b);
+        }
+
+        template<typename T, class = std::enable_if_t <
+                     (is_vector_or_vector_exp_v <T> && size_v <T> == N) || is_scalar_v <T>>>
+        friend bool operator !=(const Derived& a, const T& b) {
+            return !a.equals(b);
+        }
+
+        template<typename T, class = std::enable_if_t <
+                     (is_vector_or_vector_exp_v <T> && size_v <T> == N) || is_scalar_v <T>>>
+        friend bool operator !=(const T& a, const Derived& b) {
+            return !a.equals(b);
+        }
+
+        friend bool operator !=(const Derived& a, const Derived& b) {
+            return !a.equals(b);
+        }
+
+        template<typename T, class = std::enable_if_t <
+                     (is_vector_or_vector_exp_v <T> && size_v <T> == N) || is_scalar_v <T>>>
+        Derived& operator +=(T&& a) {
+            for (std::size_t i = 0; i < Derived::size(); i++) {
+                get(i) += subscript(a, i);
+            }
+            return *self();
+        }
+
+        template<typename T, class = std::enable_if_t <
+                     (is_vector_or_vector_exp_v <T> && size_v <T> == N) || is_scalar_v <T>>>
+        Derived& operator -=(T&& a) {
+            for (std::size_t i = 0; i < Derived::size(); i++) {
+                get(i) -= subscript(a, i);
+            }
+            return *self();
+        }
+
+        template<typename T, class = std::enable_if_t <
+                     (is_vector_or_vector_exp_v <T> && size_v <T> == N) || is_scalar_v <T>>>
+        Derived& operator *=(T&& a) {
+            for (std::size_t i = 0; i < Derived::size(); i++) {
+                get(i) *= subscript(a, i);
+            }
+            return *self();
+        }
+
+        template<typename T, class = std::enable_if_t <
+                     (is_vector_or_vector_exp_v <T> && size_v <T> == N) || is_scalar_v <T>>>
+        Derived& operator /=(T&& a) {
+            for (std::size_t i = 0; i < Derived::size(); i++) {
+                get(i) /= subscript(a, i);
+            }
+            return *self();
+        }
+
+        [[nodiscard]] std::string to_string() const {
+            std::ostringstream os;
+            os << "[";
+            for (std::size_t i = 0; i < Derived::size(); i++) {
+                if (i > 0) {
+                    os << ", ";
+                }
+                os << get(i);
+            }
+            os << "]";
+            return os.str();
+        }
+
+        friend std::ostream& operator <<(std::ostream& os, const Derived& a) {
+            os << a.to_string();
+            return os;
+        }
+
+        protected:
+            template<class operand>
+            constexpr auto subscript(operand const& v, std::size_t const i) const {
+                if constexpr (!is_scalar_v <operand>) {
+                    return v[i];
+                } else {
+                    return v;
+                }
+            }
+
+            const auto& get(std::size_t idx) const {
+                return self()->operator[](idx);
+            }
+
+            auto& get(std::size_t idx) {
+                return self()->operator[](idx);
+            }
+
+            Derived* self() {
+                return static_cast <Derived*>(this);
+            }
+
+            const Derived* self() const {
+                return static_cast <const Derived*>(this);
+            }
+    };
+
+    template<typename Elem, std::size_t N>
+    struct vector_ops : generic_vector_ops<vector <Elem, N>, N> {
+    };
 }
 
 #if defined(PPCAT_NX)
@@ -224,6 +383,5 @@ namespace neutrino::math {
 #if defined(PPCAT)
 #   undef PPCAT
 #endif
-
 
 #endif

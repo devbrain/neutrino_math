@@ -1,9 +1,9 @@
 add_executable(unittest
         main.cc
-        #test_vector.cc
-        #test_matrix.cc
         test_traits.cc
         test_vector_exp.cc
+        test_matrix.cc
+        test_lin_alg.cc
 )
 
 target_link_libraries(unittest neutrino::math doctest asan)
