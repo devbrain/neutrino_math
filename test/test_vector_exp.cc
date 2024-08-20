@@ -78,6 +78,18 @@ TEST_SUITE("test vector exp") {
             REQUIRE(v1[i] == i+1);
         }
     }
+
+    TEST_CASE("test make") {
+        using t1 = neutrino::math::vector<int, 6>;
+
+        auto v1 = neutrino::math::make_vector(1, 2, 3, 4, 5, 6);
+        static_assert(std::is_same_v<decltype(v1), t1>);
+
+        for (int i = 0; i<5; i++) {
+            REQUIRE(v1[i] == i+1);
+        }
+    }
+
     TEST_CASE("test trivial") {
         //std::initializer_list<int> args = {1, 2, 3};
         const neutrino::math::vector <int, 3> v1{1, 2, 3};;

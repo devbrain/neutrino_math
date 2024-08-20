@@ -15,6 +15,8 @@ add_library(neutrino_math INTERFACE
         include/math/detail/scalar.hh
         include/math/lin_alg/projection.hh
         include/math/detail/matrix_access.hh
+        include/math/detail/typo.hpp
+        include/math/detail/matrix_storage.hh
 )
 
 add_library(neutrino::math ALIAS neutrino_math)

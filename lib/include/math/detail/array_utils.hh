@@ -6,29 +6,29 @@
 #define NEUTRINO_MATH_ARRAY_UTILS_HH
 
 #include <array>
+#include <math/detail/traits.hh>
 
 namespace neutrino::math::detail {
     template<size_t, class T>
     constexpr T&& identity(T&& x) { return std::forward <T>(x); }
 
     template<typename T, size_t ... Indices>
-    std::array <T, sizeof...(Indices)> make_array(T arg, std::index_sequence <Indices...>) {
+    constexpr std::array <T, sizeof...(Indices)> make_array(T arg, std::index_sequence <Indices...>) {
         return {identity <Indices>(arg)...,};
     }
 
-    template<size_t idx, class T>
-    constexpr auto take(const std::initializer_list <T>& x) { return *(x.begin() + idx); }
-
-    template<typename T, size_t ... Indices>
-    constexpr std::array <T, sizeof...(Indices)> fill_array(const std::initializer_list <T>& arg,
-                                                  std::index_sequence <Indices...>) {
-        return {take <Indices>(arg)...,};
-    }
 
     template<typename... T>
-    constexpr std::array <std::tuple_element_t <0, std::tuple <T...>>, sizeof...(T)> copy_array(T... args) {
+    constexpr std::array <first_type_t<T...>, sizeof...(T)> copy_array(T... args) {
         return {args...,};
     }
+
+    template <typename T, std::size_t M,int... I>
+    constexpr std::array<T, M> array_from_values(const T (&data)[M], std::integer_sequence<int, I...>) {
+        return {data[I]...};
+    }
+
+
 }
 
 #endif

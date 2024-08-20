@@ -17,6 +17,123 @@
 
 namespace neutrino::math {
     template<typename T>
+    class vector <T, 1> : public vector_ops <T, 1> {
+        public:
+            T x{};
+
+            static constexpr std::size_t size() {
+                return 1;
+            }
+
+            constexpr vector() noexcept = default;
+            constexpr vector(const vector& other) noexcept = default;
+            constexpr vector(vector&& other) noexcept = default;
+
+            constexpr explicit vector(const T value) noexcept
+                : x(value) {
+            };
+
+            explicit constexpr vector(const std::array <T, 1>& args) noexcept
+                : x(args[0]) {
+            }
+
+            explicit vector(const T (& data)[1])
+                : x(data[0]) {
+            }
+
+            constexpr vector& operator=(const vector& other) noexcept = default;
+            constexpr vector& operator=(vector&& other) noexcept = default;
+
+            constexpr void load(const T x_val) noexcept {
+                x = x_val;
+            }
+
+            template<class Expr, MATH_VEC_ENABLE_IF_EXPR>
+            constexpr vector(Expr const& expr) noexcept {
+                x = expr[0];
+            }
+
+            template<class Expr, MATH_VEC_ENABLE_IF_EXPR>
+            vector& operator=(Expr const& expr) {
+                x = expr[0];
+                return *this; // this line was missing in the slides and in the talk
+            }
+
+            constexpr const T& operator[](const std::size_t i) const {
+                if (i == 0) return x;
+                else throw std::out_of_range("vector2D: Index out of range");
+            }
+
+            constexpr T& operator[](const std::size_t i) {
+                if (i == 0) return x;
+                else throw std::out_of_range("vector2D: Index out of range");
+            }
+    };
+
+    template<typename T>
+    class vector <T, 2> : public vector_ops <T, 2> {
+        public:
+            T x{}, y{};
+
+            static constexpr std::size_t size() {
+                return 2;
+            }
+
+            constexpr vector() noexcept = default;
+            constexpr vector(const vector& other) noexcept = default;
+            constexpr vector(vector&& other) noexcept = default;
+
+            constexpr explicit vector(const T value) noexcept
+                : x(value), y(value) {
+            };
+
+            constexpr vector(const T x_val, const T y_val) noexcept
+                : x(x_val), y(y_val) {
+            }
+
+            explicit constexpr vector(const std::array <T, 2>& args) noexcept
+                : x(args[0]), y(args[1]) {
+            }
+
+            explicit vector(const T (& data)[2])
+                : x(data[0]), y(data[1]) {
+            }
+
+            constexpr vector& operator=(const vector& other) noexcept = default;
+            constexpr vector& operator=(vector&& other) noexcept = default;
+
+            constexpr void load(const T x_val, const T y_val) noexcept {
+                x = x_val;
+                y = y_val;
+            }
+
+            template<class Expr, MATH_VEC_ENABLE_IF_EXPR>
+            constexpr vector(Expr const& expr) noexcept {
+                x = expr[0];
+                y = expr[1];
+            }
+
+            template<class Expr, MATH_VEC_ENABLE_IF_EXPR>
+            vector& operator=(Expr const& expr) {
+                x = expr[0];
+                y = expr[1];
+                return *this; // this line was missing in the slides and in the talk
+            }
+
+            constexpr const T& operator[](const std::size_t i) const {
+                if (i == 0) return x;
+                else if (i == 1) return y;
+                else throw std::out_of_range("vector2D: Index out of range");
+            }
+
+            constexpr T& operator[](const std::size_t i) {
+                if (i == 0) return x;
+                else if (i == 1) return y;
+                else throw std::out_of_range("vector2D: Index out of range");
+            }
+    };
+
+    template<typename T>
     class vector <T, 3> : public vector_ops <T, 3> {
         public:
             T x{}, y{}, z{};
@@ -41,9 +158,8 @@ namespace neutrino::math {
                 : x(args[0]), y(args[1]), z(args[2]) {
             }
 
-            template<typename D>
-            constexpr vector(const std::initializer_list <D>& args)
-                : x(*args.begin()), y(*(args.begin() + 1)), z(*(args.begin() + 2)) {
+            explicit vector(const T (& data)[3])
+                : x(data[0]), y(data[1]), z(data[2]) {
             }
 
             constexpr vector& operator=(const vector& other) noexcept = default;
@@ -91,70 +207,6 @@ namespace neutrino::math {
             }
     };
 
-    template<typename T>
-    class vector <T, 2> : public vector_ops <T, 2> {
-        public:
-            T x{}, y{};
-
-            static constexpr std::size_t size() {
-                return 2;
-            }
-
-            constexpr vector() noexcept = default;
-            constexpr vector(const vector& other) noexcept = default;
-            constexpr vector(vector&& other) noexcept = default;
-
-            constexpr explicit vector(const T value) noexcept
-                : x(value), y(value) {
-            };
-
-            constexpr vector(const T x_val, const T y_val) noexcept
-                : x(x_val), y(y_val) {
-            }
-
-            explicit constexpr vector(const std::array <T, 2>& args) noexcept
-                : x(args[0]), y(args[1]) {
-            }
-
-            template<typename D>
-            constexpr vector(const std::initializer_list <D>& args)
-                : x(*args.begin()), y(*(args.begin() + 1)) {
-            }
-
-            constexpr vector& operator=(const vector& other) noexcept = default;
-            constexpr vector& operator=(vector&& other) noexcept = default;
-
-            constexpr void load(const T x_val, const T y_val) noexcept {
-                x = x_val;
-                y = y_val;
-            }
-
-            template<class Expr, MATH_VEC_ENABLE_IF_EXPR>
-            constexpr vector(Expr const& expr) noexcept {
-                x = expr[0];
-                y = expr[1];
-            }
-
-            template<class Expr, MATH_VEC_ENABLE_IF_EXPR>
-            vector& operator=(Expr const& expr) {
-                x = expr[0];
-                y = expr[1];
-                return *this; // this line was missing in the slides and in the talk
-            }
-
-            constexpr const T& operator[](const std::size_t i) const {
-                if (i == 0) return x;
-                else if (i == 1) return y;
-                else throw std::out_of_range("vector2D: Index out of range");
-            }
-
-            constexpr T& operator[](const std::size_t i) {
-                if (i == 0) return x;
-                else if (i == 1) return y;
-                else throw std::out_of_range("vector2D: Index out of range");
-            }
-    };
-
     template<typename T, std::size_t N>
     class vector : public vector_ops <T, N> {
         public:
@@ -172,8 +224,11 @@ namespace neutrino::math {
                 : values(detail::make_array(value, std::make_index_sequence <N>())) {
             };
 
-            constexpr vector(const std::initializer_list <T>& args) noexcept
-                : values(detail::fill_array(args, std::make_index_sequence <N>())) {
+            explicit vector(const T (& data)[N])
+                : values{
+                    detail::array_from_values <T, N>(std::forward <decltype(data)>(data),
+                                                     std::make_integer_sequence <int, N>{})
+                } {
             }
 
             constexpr explicit vector(const std::array <T, N>& args) noexcept
@@ -217,6 +272,27 @@ namespace neutrino::math {
                 } else throw std::out_of_range("vectorN: Index out of range");
             }
     };
+
+    // ===========================================================================
+    // Makers
+    // ===========================================================================
+
+    template<typename... T>
+    std::enable_if_t <is_all_same_v <T...> && std::conjunction_v <std::is_scalar <T>...>, vector <
+                          first_type_t <T...>, sizeof...(T)>>
+    make_vector(T&&... args) {
+        return vector <first_type_t <T...>, sizeof...(T)>{std::forward <T>(args)...,};
+    }
+
+    template<typename T, std::size_t N, class = std::enable_if_t <is_scalar_v <T>>>
+    auto make_vector(const std::array <T, N>& data) {
+        return vector <T, N>(data);
+    }
+
+    template <typename T, std::size_t N>
+    auto make_vector(T (&&data)[N]) {
+        return vector<T, N>{std::forward<decltype(data)>(data)};
+    }
 }
 
 #endif

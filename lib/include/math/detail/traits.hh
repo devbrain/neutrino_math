@@ -109,6 +109,14 @@ namespace neutrino::math {
     template<typename T>
     static constexpr auto size_v = vector_size_traits<std::decay_t<T>>::size();
 
+    template<typename T, typename... Ts>
+    constexpr bool is_all_same_type_v = std::conjunction_v<std::is_same<T, Ts>...>;
+
+    template<typename... T>
+    using first_type_t = std::tuple_element_t <0, std::tuple <T...>>;
+
+    template<typename... Ts>
+    constexpr bool is_all_same_v = is_all_same_type_v<first_type_t<Ts...>, Ts...>;
 }
 
 #endif
