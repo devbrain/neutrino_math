@@ -134,6 +134,40 @@ namespace neutrino::math {
         return out;
     }
 
+    template<class LHS, class = std::enable_if_t <is_vector_or_vector_exp_v <LHS>>>
+    auto prod(LHS&& lhs) {
+        auto out = lhs[0];
+        constexpr std::size_t size = size_v <LHS>;
+        for (std::size_t i = 1; i < size; i++) {
+            out *= lhs[i];
+        }
+        return out;
+    }
+
+    template<class LHS, class = std::enable_if_t <is_vector_or_vector_exp_v <LHS>>>
+    auto max(LHS&& lhs) {
+        auto out = lhs[0];
+        constexpr std::size_t size = size_v <LHS>;
+        for (std::size_t i = 1; i < size; i++) {
+            if (lhs[i] > out) {
+                out = lhs[i];
+            }
+        }
+        return out;
+    }
+
+    template<class LHS, class = std::enable_if_t <is_vector_or_vector_exp_v <LHS>>>
+    auto min(LHS&& lhs) {
+        auto out = lhs[0];
+        constexpr std::size_t size = size_v <LHS>;
+        for (std::size_t i = 1; i < size; i++) {
+            if (lhs[i] < out) {
+                out = lhs[i];
+            }
+        }
+        return out;
+    }
+
     template<class LHS, class RHS, class = std::enable_if_t <
                  is_vector_or_vector_exp_v <LHS> && is_vector_or_vector_exp_v <RHS> && detail::is_compatible_size_v <
                      LHS, RHS>>>
@@ -223,12 +257,116 @@ namespace neutrino::math {
     d_MATH_VEC1(invpow2)
 
     // ===========================================================================
+    template<typename Derived, std::size_t N>
+    struct generic_vector_ops;
+
+    template<typename Vec, std::size_t N>
+    class vector_iterator {
+        friend struct generic_vector_ops <Vec, N>;
+
+        public:
+            using iterator_category = std::forward_iterator_tag;
+            using difference_type = std::ptrdiff_t;
+            using value_type = typename Vec::value_type;
+            using pointer = value_type*;
+            using reference = value_type&;
+
+            reference operator*() const { return m_vec[m_ptr]; }
+
+            // Prefix increment
+            vector_iterator& operator++() {
+                m_ptr++;
+                return *this;
+            }
+
+            // Postfix increment
+            vector_iterator operator++(int) {
+                auto tmp = *this;
+                ++(*this);
+                return tmp;
+            }
+
+            friend bool operator==(const vector_iterator& a, const vector_iterator& b) { return a.m_ptr == b.m_ptr; };
+            friend bool operator!=(const vector_iterator& a, const vector_iterator& b) { return a.m_ptr != b.m_ptr; };
+
+        private:
+            vector_iterator(std::size_t idx, Vec& vec)
+                : m_vec(vec), m_ptr(idx) {
+            }
+
+            Vec& m_vec;
+            std::size_t m_ptr;
+    };
+
+    template<typename Vec, std::size_t N>
+    class const_vector_iterator {
+        friend struct generic_vector_ops <Vec, N>;
+
+        public:
+            using iterator_category = std::forward_iterator_tag;
+            using value_type = typename Vec::value_type;
+            using reference = const value_type&;
+
+            reference operator*() const { return m_vec[m_ptr]; }
+
+            // Prefix increment
+            const_vector_iterator& operator++() {
+                m_ptr++;
+                return *this;
+            }
+
+            // Postfix increment
+            const_vector_iterator operator++(int) {
+                auto tmp = *this;
+                ++(*this);
+                return tmp;
+            }
+
+            friend bool operator==(const const_vector_iterator& a, const const_vector_iterator& b) {
+                return a.m_ptr == b.m_ptr;
+            };
+
+            friend bool operator!=(const const_vector_iterator& a, const const_vector_iterator& b) {
+                return a.m_ptr != b.m_ptr;
+            };
+
+        private:
+            const_vector_iterator(std::size_t idx, const Vec& vec)
+                : m_vec(vec), m_ptr(idx) {
+            }
+
+            const Vec& m_vec;
+            std::size_t m_ptr;
+    };
 
     template<typename Derived, std::size_t N>
     struct generic_vector_ops {
-
         auto operator()(std::size_t idx) const {
             return get(idx);
+        }
+
+        const_vector_iterator <Derived, N> begin() const {
+            return const_vector_iterator <Derived, N>(0, *self());
+        }
+
+        const_vector_iterator <Derived, N> end() const {
+            return const_vector_iterator <Derived, N>(N, *self());
+        }
+
+        const_vector_iterator <Derived, N> cbegin() const {
+            return const_vector_iterator <Derived, N>(0, *self());
+        }
+
+        const_vector_iterator <Derived, N> cend() const {
+            return const_vector_iterator <Derived, N>(N, *self());
+        }
+
+        vector_iterator <Derived, N> begin() {
+            return vector_iterator <Derived, N>(0, *self());
+        }
+
+        vector_iterator <Derived, N> end() {
+            return vector_iterator <Derived, N>(N, *self());
         }
 
         // ---------------------------------------------------------------------------------
@@ -373,7 +511,7 @@ namespace neutrino::math {
     };
 
     template<typename Elem, std::size_t N>
-    struct vector_ops : generic_vector_ops<vector <Elem, N>, N> {
+    struct vector_ops : generic_vector_ops <vector <Elem, N>, N> {
     };
 }
 

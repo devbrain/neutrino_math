@@ -111,22 +111,22 @@ namespace neutrino::math::detail {
 
 namespace neutrino::math {
     template<typename E, std::size_t R, std::size_t C>
-    constexpr auto columns(matrix <E, R, C>& m) {
+    constexpr auto columns_tuple(matrix <E, R, C>& m) {
         return detail::make_access_by_col_helper(m, std::make_index_sequence <C>());
     }
 
     template<typename E, std::size_t R, std::size_t C>
-    constexpr auto columns(const matrix <E, R, C>& m) {
+    constexpr auto columns_tuple(const matrix <E, R, C>& m) {
         return detail::make_access_by_col_helper(m, std::make_index_sequence <C>());
     }
 
     template<typename E, std::size_t R, std::size_t C>
-    constexpr auto rows(matrix <E, R, C>& m) {
+    constexpr auto rows_tuple(matrix <E, R, C>& m) {
         return detail::make_access_by_row_helper(m, std::make_index_sequence <R>());
     }
 
     template<typename E, std::size_t R, std::size_t C>
-    constexpr auto rows(const matrix <E, R, C>& m) {
+    constexpr auto rows_tuple(const matrix <E, R, C>& m) {
         return detail::make_access_by_col_helper(m, std::make_index_sequence <R>());
     }
 }

@@ -99,6 +99,15 @@ TEST_SUITE("test vector exp") {
         REQUIRE_EQ(v3.x, 11);
         REQUIRE_EQ(v3.y, 14);
         REQUIRE_EQ(v3.z, 16);
+
+        std::array<int, 3> a = {11, 14, 16};
+        int i = 0;
+        for (auto x : v3) {
+            REQUIRE(x == a[i++]);
+        }
+
+        REQUIRE_EQ(max(v3), 16);
+        REQUIRE_EQ(min(v3), 11);
     }
 
     TEST_CASE("test temp") {

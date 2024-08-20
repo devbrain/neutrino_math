@@ -72,8 +72,62 @@ namespace neutrino::math {
     auto sum(Mat&& lhs) {
         auto tr = lhs(0, 0);
         for (std::size_t r = 1; r < detail::matrix_rows_v <Mat>; r++) {
+            tr += lhs(r, 0);
+        }
+        for (std::size_t c = 1; c < detail::matrix_columns_v <Mat>; c++) {
+            tr += lhs(0, c);
+        }
+        for (std::size_t r = 1; r < detail::matrix_rows_v <Mat>; r++) {
             for (std::size_t c = 1; c < detail::matrix_columns_v <Mat>; c++) {
                 tr += lhs(r, c);
+            }
+        }
+        return tr;
+    }
+
+    template<class Mat, class = detail::enable_if_matrix_t <Mat>, bool IsMatrix = true>
+    auto max(Mat&& lhs) {
+        auto tr = lhs(0, 0);
+        for (std::size_t r = 1; r < detail::matrix_rows_v <Mat>; r++) {
+            if (lhs(r, 0) > tr) {
+                tr = lhs(r, 0);
+            }
+        }
+        for (std::size_t c = 1; c < detail::matrix_columns_v <Mat>; c++) {
+            if (lhs(0, c) > tr) {
+                tr = lhs(0, c);
+            }
+        }
+
+        for (std::size_t r = 1; r < detail::matrix_rows_v <Mat>; r++) {
+            for (std::size_t c = 1; c < detail::matrix_columns_v <Mat>; c++) {
+                if (lhs(r, c) > tr) {
+                    tr = lhs(r, c);
+                }
+            }
+        }
+        return tr;
+    }
+
+    template<class Mat, class = detail::enable_if_matrix_t <Mat>, bool IsMatrix = true>
+    auto min(Mat&& lhs) {
+        auto tr = lhs(0, 0);
+        for (std::size_t r = 1; r < detail::matrix_rows_v <Mat>; r++) {
+            if (lhs(r, 0) < tr) {
+                tr = lhs(r, 0);
+            }
+        }
+        for (std::size_t c = 1; c < detail::matrix_columns_v <Mat>; c++) {
+            if (lhs(0, c) < tr) {
+                tr = lhs(0, c);
+            }
+        }
+
+        for (std::size_t r = 1; r < detail::matrix_rows_v <Mat>; r++) {
+            for (std::size_t c = 1; c < detail::matrix_columns_v <Mat>; c++) {
+                if (lhs(r, c) < tr) {
+                    tr = lhs(r, c);
+                }
             }
         }
         return tr;
@@ -161,13 +215,13 @@ namespace neutrino::math {
     // element-wise functions
     // =============================================================================
 
-#define d_MATH_MAT1(NAME)                                                                                                   \
-    template<class LHS, class = detail::enable_if_matrix_t <LHS>>                                                               \
-    auto NAME(LHS&& lhs) {                                                                                                      \
-        return detail::make_unary_matrix_expr<vector_fn::PPCAT(unary_, NAME),                                                   \
-                LHS, detail::matrix_rows_v <LHS>,                                                                               \
-                detail::matrix_columns_v <LHS>>                                                                                 \
-                (std::forward <LHS>(lhs));                                                                                      \
+#define d_MATH_MAT1(NAME)                                                           \
+    template<class LHS, class = detail::enable_if_matrix_t <LHS>>                   \
+    auto NAME(LHS&& lhs) {                                                          \
+        return detail::make_unary_matrix_expr<vector_fn::PPCAT(unary_, NAME),       \
+                LHS, detail::matrix_rows_v <LHS>,                                   \
+                detail::matrix_columns_v <LHS>>                                     \
+                (std::forward <LHS>(lhs));                                          \
     }
 
     d_MATH_MAT1(inv) // x -> 1/x

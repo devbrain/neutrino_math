@@ -7,11 +7,7 @@
 #include <math/math.hh>
 #include <math/detail/typo.hpp>
 
-
-
-
 TEST_SUITE("Matrix test suite") {
-
     TEST_CASE("Test constructor") {
         neutrino::math::matrix <int, 4, 4>
             m({
@@ -37,11 +33,11 @@ TEST_SUITE("Matrix test suite") {
 
     TEST_CASE("Test transpose") {
         auto m = neutrino::math::make_matrix({
-                {0, 1, 2},
-                {4, 5, 6},
-                {8, 9, 10},
-                {12, 13, 14}
-            });
+            {0, 1, 2},
+            {4, 5, 6},
+            {8, 9, 10},
+            {12, 13, 14}
+        });
 
         neutrino::math::matrix <int, 3, 4> m2(transpose(m));
         for (int r = 0; r < 4; r++) {
@@ -100,6 +96,17 @@ TEST_SUITE("Matrix test suite") {
                 REQUIRE_EQ(a(r, c), std::conj(m(c, r)));
             }
         }
+    }
+
+    TEST_CASE("Test min/max/sum") {
+        auto m = neutrino::math::make_matrix({
+            {1, 2},
+            {4, 5},
+        });
+        REQUIRE_EQ(sum(m), 1+2+4+5);
+        REQUIRE_EQ(min(m), 1);
+        REQUIRE_EQ(max(m), 5);
+        REQUIRE_EQ(trace(m), 1+5);
     }
 
     TEST_CASE("Test inv") {
@@ -236,14 +243,14 @@ TEST_SUITE("Matrix test suite") {
     TEST_CASE("Test matrix crtp ops") {
         neutrino::math::matrix <int, 2, 3>
             m1({
-                    {1, 2, 3},
-                    {4, 5, 6}
+                {1, 2, 3},
+                {4, 5, 6}
             });
 
         neutrino::math::matrix <int, 2, 3>
             m2({
-                        {2*1, 2*2, 2*3},
-                        {2*4, 2*5, 2*6}
+                {2 * 1, 2 * 2, 2 * 3},
+                {2 * 4, 2 * 5, 2 * 6}
             });
 
         m1 *= 2;
@@ -260,13 +267,13 @@ TEST_SUITE("Matrix test suite") {
             });
         neutrino::math::matrix <int, 4, 4>
             m2({
-                    {0, 1, 2-10, 3},
-                    {4, 5, 6-10, 7},
-                    {8, 9, 10-10, 11},
-                    {12, 13, 14-10, 15}
+                {0, 1, 2 - 10, 3},
+                {4, 5, 6 - 10, 7},
+                {8, 9, 10 - 10, 11},
+                {12, 13, 14 - 10, 15}
             });
-        auto cols = columns(m);
-        auto c2 = std::get<2>(cols);
+        auto cols = columns_tuple(m);
+        auto c2 = std::get <2>(cols);
         double n = norm2(c2);
         REQUIRE(doctest::Approx(n) == 2*2+6*6+10*10 + 14*14);
 
@@ -274,24 +281,24 @@ TEST_SUITE("Matrix test suite") {
 
         REQUIRE_EQ(m2, m);
 
-        auto c3 = std::get<3>(cols);
+        auto c3 = std::get <3>(cols);
 
         c3 = abs(c2);
-        for (std::size_t i=0; i<m.get_rows_num(); i++) {
-             REQUIRE_EQ(m(i, 3), std::abs(m(i, 2)));
+        for (std::size_t i = 0; i < m.get_rows_num(); i++) {
+            REQUIRE_EQ(m(i, 3), std::abs(m(i, 2)));
         }
 
         neutrino::math::matrix <int, 4, 4> m3{};
         m3 = c3;
-        for (std::size_t i=0; i<m.get_rows_num(); i++) {
+        for (std::size_t i = 0; i < m.get_rows_num(); i++) {
             REQUIRE_EQ(m3(i, 3), m(i, 3));
         }
 
-
-        for (const auto c : m.columns()) {
-            for (std::size_t i=0; i<m.get_rows_num(); i++) {
+        for (const auto c : columns(m)) {
+            for (std::size_t i = 0; i < m.get_rows_num(); i++) {
                 REQUIRE_EQ(c[i], m(i, c.get_index()));
             }
         }
     }
 }
+

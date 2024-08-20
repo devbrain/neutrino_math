@@ -17,6 +17,9 @@ add_library(neutrino_math INTERFACE
         include/math/detail/matrix_access.hh
         include/math/detail/typo.hpp
         include/math/detail/matrix_storage.hh
+        include/math/detail/matrix_iterator.hh
+        include/math/detail/make_vector.hh
+        include/math/detail/make_matrix.hh
 )
 
 add_library(neutrino::math ALIAS neutrino_math)
