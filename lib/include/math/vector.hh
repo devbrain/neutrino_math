@@ -248,10 +248,10 @@ namespace neutrino::math {
             constexpr vector& operator=(vector&& other) noexcept = default;
 
             template<class Expr, MATH_VEC_ENABLE_IF_EXPR>
-            constexpr vector(Expr const& expr) noexcept {
-                for (std::size_t i = 0; i < N; i++) {
-                    values[i] = expr[i];
-                }
+            constexpr vector(Expr const& expr) noexcept
+                : values{
+                    detail::array_from_expression <T, N>(expr, std::make_integer_sequence <int, N>{})
+                } {
             }
 
             template<class Expr, MATH_VEC_ENABLE_IF_EXPR>
@@ -276,7 +276,6 @@ namespace neutrino::math {
                 } else throw std::out_of_range("vectorN: Index out of range");
             }
     };
-
 }
 
 #endif

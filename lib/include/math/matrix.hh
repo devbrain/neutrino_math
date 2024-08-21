@@ -41,6 +41,11 @@ namespace neutrino::math {
                 : values{storage_t::template create(data, std::make_integer_sequence <int, R>{})} {
             }
 
+            template<typename Expr, class = std::enable_if_t <is_matrix_or_matrix_exp_v <Expr, R, C>>>
+            constexpr matrix(const Expr& expr)
+                : values{storage_t::template create_from_expr(expr, std::make_integer_sequence <int, R>{})} {
+            }
+
             constexpr const auto& operator()(std::size_t r, std::size_t c) const {
                 if (r >= R) {
                     throw std::out_of_range("matrix: Index out of range");
@@ -53,15 +58,6 @@ namespace neutrino::math {
                     throw std::out_of_range("matrix: Index out of range");
                 }
                 return values[r][c];
-            }
-
-            template<typename T, class = std::enable_if_t <is_matrix_or_matrix_exp_v <T, R, C>>>
-            constexpr matrix(const T& v) {
-                for (std::size_t r = 0; r < R; r++) {
-                    for (std::size_t c = 0; c < C; c++) {
-                        values[r][c] = v(r, c);
-                    }
-                }
             }
 
             template<bool ByRow>

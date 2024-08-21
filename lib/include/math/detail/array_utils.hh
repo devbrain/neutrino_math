@@ -28,7 +28,10 @@ namespace neutrino::math::detail {
         return {data[I]...};
     }
 
-
+    template <typename T, std::size_t M, typename E, int... I>
+    constexpr std::array<T, M> array_from_expression(const E& expr, std::integer_sequence<int, I...>) {
+        return {expr[I]...};
+    }
 }
 
 #endif
