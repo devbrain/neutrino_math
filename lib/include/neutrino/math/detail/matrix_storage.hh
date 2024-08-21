@@ -5,7 +5,7 @@
 #ifndef NEUTRINO_MATH_DETAIL_MATRIX_STORAGE_HH
 #define NEUTRINO_MATH_DETAIL_MATRIX_STORAGE_HH
 
-#include <math/vector.hh>
+#include <neutrino/math/vector.hh>
 
 namespace neutrino::math::detail {
     template<typename E, std::size_t R, std::size_t C>

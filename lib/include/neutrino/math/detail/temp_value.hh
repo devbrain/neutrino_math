@@ -5,8 +5,8 @@
 #ifndef NEUTRINO_MATH_DETAIL_TEMP_VALUE_HH
 #define NEUTRINO_MATH_DETAIL_TEMP_VALUE_HH
 
-#include <math/detail/vector_temp_value.hh>
-#include <math/detail/matrix_temp_value.hh>
+#include <neutrino/math/detail/vector_temp_value.hh>
+#include <neutrino/math/detail/matrix_temp_value.hh>
 
 namespace neutrino::math::detail {
     template<typename T>

@@ -5,7 +5,7 @@
 #ifndef NEUTRINO_MATH_DETAIL_MATRIX_ITERATOR_HH
 #define NEUTRINO_MATH_DETAIL_MATRIX_ITERATOR_HH
 
-#include <math/matrix.hh>
+#include <neutrino/math/matrix.hh>
 
 namespace neutrino::math {
     template<typename E, std::size_t R, std::size_t C, bool ByRow>

@@ -2,7 +2,7 @@
 // Created by igor on 8/12/24.
 //
 #include <doctest/doctest.h>
-#include <math/math.hh>
+#include <neutrino/math/math.hh>
 
 // #include <vector>
 // #include <chrono>

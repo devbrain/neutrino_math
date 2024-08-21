@@ -5,10 +5,10 @@
 #ifndef NEUTRINO_MATH_DETAIL_MATRIX_OPS_HH
 #define NEUTRINO_MATH_DETAIL_MATRIX_OPS_HH
 
-#include <math/matrix.hh>
-#include <math/vector.hh>
-#include <math/detail/matrix_expr.hh>
-#include <math/detail/matrix_traits.hh>
+#include <neutrino/math/matrix.hh>
+#include <neutrino/math/vector.hh>
+#include <neutrino/math/detail/matrix_expr.hh>
+#include <neutrino/math/detail/matrix_traits.hh>
 
 #if defined(PPCAT_NX)
 #   undef PPCAT_NX

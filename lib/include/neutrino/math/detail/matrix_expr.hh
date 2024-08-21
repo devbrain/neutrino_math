@@ -5,9 +5,9 @@
 #ifndef NEUTRINO_MATH_DETAIL_MATRIX_EXPR_HH
 #define NEUTRINO_MATH_DETAIL_MATRIX_EXPR_HH
 
-#include <math/matrix_fwd.hh>
-#include <math/detail/vector_expr.hh>
-#include <math/detail/temp_value.hh>
+#include <neutrino/math/matrix_fwd.hh>
+#include <neutrino/math/detail/vector_expr.hh>
+#include <neutrino/math/detail/temp_value.hh>
 
 
 namespace neutrino::math::detail {

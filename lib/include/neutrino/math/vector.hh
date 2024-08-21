@@ -8,9 +8,9 @@
 #include <stdexcept>
 #include <array>
 
-#include <math/detail/traits.hh>
-#include <math/detail/vector_ops.hh>
-#include <math/detail/array_utils.hh>
+#include <neutrino/math/detail/traits.hh>
+#include <neutrino/math/detail/vector_ops.hh>
+#include <neutrino/math/detail/array_utils.hh>
 
 #define MATH_VEC_ENABLE_IF_EXPR class = std::enable_if_t <is_vector_expression_v <Expr> && size_v<Expr> == size()>
 

@@ -6,7 +6,7 @@
 #define NEUTRINO_MATH_ARRAY_UTILS_HH
 
 #include <array>
-#include <math/detail/traits.hh>
+#include <neutrino/math/detail/traits.hh>
 
 namespace neutrino::math::detail {
     template<size_t, class T>

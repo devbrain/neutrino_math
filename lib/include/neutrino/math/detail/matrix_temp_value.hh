@@ -8,7 +8,7 @@
 #include <cstddef>
 #include <utility>
 
-#include <math/detail/traits.hh>
+#include <neutrino/math/detail/traits.hh>
 
 namespace neutrino::math::detail {
     template<typename T>

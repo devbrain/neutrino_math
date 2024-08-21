@@ -5,10 +5,10 @@
 #ifndef NEUTRINO_MATH_MATRIX_HH
 #define NEUTRINO_MATH_MATRIX_HH
 
-#include <math/vector.hh>
-#include <math/detail/matrix_ops.hh>
-#include <math/detail/matrix_storage.hh>
-#include <math/detail/matrix_access.hh>
+#include <neutrino/math/vector.hh>
+#include <neutrino/math/detail/matrix_ops.hh>
+#include <neutrino/math/detail/matrix_storage.hh>
+#include <neutrino/math/detail/matrix_access.hh>
 
 namespace neutrino::math {
     namespace detail {

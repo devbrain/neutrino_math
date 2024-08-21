@@ -4,8 +4,8 @@
 
 #include <vector>
 #include <doctest/doctest.h>
-#include <math/math.hh>
-#include <math/detail/typo.hpp>
+#include <neutrino/math/math.hh>
+
 
 TEST_SUITE("Matrix test suite") {
     TEST_CASE("Test constructor") {

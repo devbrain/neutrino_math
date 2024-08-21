@@ -6,7 +6,6 @@ if (NEUTRINO_MATH_BUILD_TEST)
     add_subdirectory(doctest)
 endif()
 
-add_subdirectory(box2d)
 
 
 

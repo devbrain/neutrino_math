@@ -5,7 +5,7 @@
 #ifndef NEUTRINO_MATH_DETAIL_MAKE_VECTOR_HH
 #define NEUTRINO_MATH_DETAIL_MAKE_VECTOR_HH
 
-#include <math/vector.hh>
+#include <neutrino/math/vector.hh>
 
 namespace neutrino::math {
     template<typename... T>

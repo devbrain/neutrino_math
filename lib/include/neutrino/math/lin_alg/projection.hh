@@ -5,7 +5,7 @@
 #ifndef NEUTRINO_MATH_LIN_ALG_PROJECTION_HH
 #define NEUTRINO_MATH_LIN_ALG_PROJECTION_HH
 
-#include <math/vector.hh>
+#include <neutrino/math/vector.hh>
 
 namespace neutrino::math {
     /**

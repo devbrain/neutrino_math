@@ -5,10 +5,9 @@
 #ifndef MATH_LIN_ALG_ORTHONORMALIZE_HH
 #define MATH_LIN_ALG_ORTHONORMALIZE_HH
 
-#include <math/matrix.hh>
-#include <math/detail/matrix_iterator.hh>
-#include <math/detail/vector_ops.hh>
-#include <math/lin_alg/projection.hh>
+#include <neutrino/math/matrix.hh>
+#include <neutrino/math/detail/vector_ops.hh>
+#include <neutrino/math/lin_alg/projection.hh>
 
 namespace neutrino::math {
     template <typename T, std::size_t Rows, std::size_t Cols>

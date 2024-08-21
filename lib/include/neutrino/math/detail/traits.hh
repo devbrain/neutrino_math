@@ -8,8 +8,8 @@
 #include <type_traits>
 #include <complex>
 
-#include <math/vector_fwd.hh>
-#include <math/matrix_fwd.hh>
+#include <neutrino/math/vector_fwd.hh>
+#include <neutrino/math/matrix_fwd.hh>
 
 
 

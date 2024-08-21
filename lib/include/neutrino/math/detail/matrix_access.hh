@@ -6,7 +6,7 @@
 #define NEUTRINO_MATH_DETAIL_MATRIX_ACCESS_HH
 
 #include <tuple>
-#include <math/detail/matrix_storage.hh>
+#include <neutrino/math/detail/matrix_storage.hh>
 
 namespace neutrino::math::detail {
     template<typename E, std::size_t R, std::size_t C, bool ByRow>

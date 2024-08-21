@@ -7,9 +7,9 @@
 
 #include <iostream>
 #include <sstream>
-#include <math/detail/vector_functors.hh>
-#include <math/detail/vector_expr.hh>
-#include <math/detail/scalar.hh>
+#include <neutrino/math/detail/vector_functors.hh>
+#include <neutrino/math/detail/vector_expr.hh>
+#include <neutrino/math/detail/scalar.hh>
 
 #if defined(PPCAT_NX)
 #   undef PPCAT_NX

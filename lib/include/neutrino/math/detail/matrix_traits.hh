@@ -5,7 +5,7 @@
 #ifndef NEUTRINO_MATH_DETAIL_MATRIX_TRAITS_HH
 #define NEUTRINO_MATH_DETAIL_MATRIX_TRAITS_HH
 
-#include <math/detail/matrix_expr.hh>
+#include <neutrino/math/detail/matrix_expr.hh>
 
 namespace neutrino::math::detail {
     template <typename T>

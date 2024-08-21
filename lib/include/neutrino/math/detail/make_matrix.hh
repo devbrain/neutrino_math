@@ -5,8 +5,9 @@
 #ifndef NEUTRINO_MATH_DETAIL_MAKE_MATRIX_HH
 #define NEUTRINO_MATH_DETAIL_MAKE_MATRIX_HH
 
-#include <math/matrix.hh>
-#include <math/detail/matrix_ops.hh>
+#include <neutrino/math/matrix.hh>
+#include <neutrino/math/detail/matrix_ops.hh>
+
 namespace neutrino::math {
     template<typename E, std::size_t R, std::size_t C>
     auto make_matrix(const E (&& data)[R][C]) {

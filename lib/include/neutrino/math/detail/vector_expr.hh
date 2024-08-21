@@ -6,9 +6,9 @@
 #define NEUTRINO_MATH_VECTOR_EXPR_HH
 
 #include <cstddef>
-#include <math/detail/traits.hh>
-#include <math/detail/temp_value.hh>
-#include <math/detail/vector_functors.hh>
+#include <neutrino/math/detail/traits.hh>
+#include <neutrino/math/detail/temp_value.hh>
+#include <neutrino/math/detail/vector_functors.hh>
 
 namespace neutrino::math {
     namespace detail {
