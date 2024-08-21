@@ -45,13 +45,9 @@ namespace neutrino::math {
             constexpr vector& operator=(const vector& other) noexcept = default;
             constexpr vector& operator=(vector&& other) noexcept = default;
 
-            constexpr void load(const T x_val) noexcept {
-                x = x_val;
-            }
-
             template<class Expr, MATH_VEC_ENABLE_IF_EXPR>
-            constexpr vector(Expr const& expr) noexcept {
-                x = expr[0];
+            constexpr vector(Expr const& expr) noexcept
+                : x{expr[0]} {
             }
 
             template<class Expr, MATH_VEC_ENABLE_IF_EXPR>
@@ -104,15 +100,10 @@ namespace neutrino::math {
             constexpr vector& operator=(const vector& other) noexcept = default;
             constexpr vector& operator=(vector&& other) noexcept = default;
 
-            constexpr void load(const T x_val, const T y_val) noexcept {
-                x = x_val;
-                y = y_val;
-            }
-
             template<class Expr, MATH_VEC_ENABLE_IF_EXPR>
-            constexpr vector(Expr const& expr) noexcept {
-                x = expr[0];
-                y = expr[1];
+            constexpr vector(Expr const& expr) noexcept
+                : x{expr[0]},
+                  y{expr[1]} {
             }
 
             template<class Expr, MATH_VEC_ENABLE_IF_EXPR>
@@ -168,17 +159,11 @@ namespace neutrino::math {
             constexpr vector& operator=(const vector& other) noexcept = default;
             constexpr vector& operator=(vector&& other) noexcept = default;
 
-            constexpr void load(const T x_val, const T y_val, const T z_val) noexcept {
-                x = x_val;
-                y = y_val;
-                z = z_val;
-            }
-
             template<class Expr, MATH_VEC_ENABLE_IF_EXPR>
-            constexpr vector(Expr const& expr) noexcept {
-                x = expr[0];
-                y = expr[1];
-                z = expr[2];
+            constexpr vector(Expr const& expr) noexcept
+                : x{expr[0]},
+                  y{expr[1]},
+                  z{expr[2]} {
             }
 
             template<class Expr, MATH_VEC_ENABLE_IF_EXPR>
@@ -203,10 +188,16 @@ namespace neutrino::math {
             }
 
             constexpr T& operator[](const std::size_t i) {
-                if (i == 0) return x;
-                else if (i == 1) return y;
-                else if (i == 2) return z;
-                else throw std::out_of_range("vector3D: Index out of range");
+                switch (i) {
+                    case 0:
+                        return x;
+                    case 1:
+                        return y;
+                    case 2:
+                        return z;
+                    default:
+                        throw std::out_of_range("vector3D: Index out of range");
+                }
             }
     };
 

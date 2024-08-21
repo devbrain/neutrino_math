@@ -36,6 +36,10 @@ namespace neutrino::math {
 
         public:
             matrix() = default;
+            matrix(const matrix&) noexcept = default;
+            matrix(matrix&&) noexcept = default;
+            matrix& operator=(const matrix&) noexcept = default;
+            matrix& operator=(matrix&&) noexcept = default;
 
             constexpr matrix(const E (& data)[R][C])
                 : values{storage_t::template create(data, std::make_integer_sequence <int, R>{})} {
@@ -83,6 +87,20 @@ namespace neutrino::math {
                     }
                 }
                 return *this;
+            }
+
+            template<typename Expr, class = std::enable_if_t<is_vector_or_vector_exp_v<Expr> && Expr::size() == R>>
+            void set_column(const Expr& col, std::size_t col_idx) {
+                for (std::size_t r = 0; r < R; r++) {
+                    values[r][col_idx] = col[r];
+                }
+            }
+
+            template<typename Expr, class = std::enable_if_t<is_vector_or_vector_exp_v<Expr> && Expr::size() == C>>
+            void set_row(const Expr& row, std::size_t row_idx) {
+                for (std::size_t c = 0; c < C; c++) {
+                    values[row_idx][c] = row[c];
+                }
             }
 
             [[nodiscard]] constexpr std::size_t get_rows_num() const {

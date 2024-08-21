@@ -14,5 +14,6 @@
 #include <math/detail/matrix_iterator.hh>
 #include <math/detail/make_matrix.hh>
 #include <math/lin_alg/projection.hh>
+#include <math/lin_alg/orthonormalize.hh>
 
 #endif

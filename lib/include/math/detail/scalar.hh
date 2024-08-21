@@ -41,6 +41,11 @@ namespace neutrino::math::detail {
     };
 
     template <>
+   struct scalar_coersion<double, double> {
+        using type = double;
+    };
+
+    template <>
     struct scalar_coersion<float, double> {
         using type = double;
     };

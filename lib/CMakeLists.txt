@@ -23,6 +23,7 @@ add_library(neutrino_math INTERFACE
         include/math/detail/vector_temp_value.hh
         include/math/detail/matrix_temp_value.hh
         include/math/detail/temp_value.hh
+        include/math/lin_alg/orthonormalize.hh
 )
 
 add_library(neutrino::math ALIAS neutrino_math)

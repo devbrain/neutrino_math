@@ -345,6 +345,15 @@ namespace neutrino::math {
             return get(idx);
         }
 
+        template <typename ...E>
+        void load(const E&... args) {
+            int i = 0;
+            ([&]
+            {
+                self()->operator[](i++) = args;
+            } (), ...);
+        }
+
         const_vector_iterator <Derived, N> begin() const {
             return const_vector_iterator <Derived, N>(0, *self());
         }
@@ -508,6 +517,8 @@ namespace neutrino::math {
             const Derived* self() const {
                 return static_cast <const Derived*>(this);
             }
+
+
     };
 
     template<typename Elem, std::size_t N>

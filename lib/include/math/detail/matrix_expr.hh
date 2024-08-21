@@ -119,6 +119,9 @@ namespace neutrino::math::detail {
             explicit matrix_as_vector_expression(LHS const& lhs_, std::size_t axis_)
                 : lhs(lhs_),
                   axis(axis_) {
+                if (axis >= size()) {
+                    throw std::out_of_range("matrix_as_vector: Index out of range");
+                }
             }
 
             constexpr static std::size_t size() {

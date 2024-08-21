@@ -13,8 +13,9 @@ namespace neutrino::math {
      **/
     template<typename A, typename B>
     auto proj(A&& e, B&& vec) {
-        return (dot(std::forward <A>(e), std::forward <B>(vec)) / dot(std::forward <A>(e), std::forward <A>(e))) *
-               std::forward <A>(e);
+        auto d1 = dot(std::forward <A>(e), std::forward <B>(vec));
+        auto d2 = dot(std::forward <A>(e), std::forward <A>(e));
+        return (d1/d2) * std::forward <A>(e);
     }
 }
 
