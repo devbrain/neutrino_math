@@ -10,15 +10,12 @@
 #include <neutrino/math/detail/matrix_expr.hh>
 #include <neutrino/math/detail/matrix_traits.hh>
 
-#if defined(PPCAT_NX)
-#   undef PPCAT_NX
-#endif
-#if defined(PPCAT)
-#   undef PPCAT
-#endif
 
+#if !defined(PPCAT)
 #define PPCAT_NX(A, B) A ## B
 #define PPCAT(A, B) PPCAT_NX(A, B)
+#endif
+
 
 namespace neutrino::math {
     template<typename Vec, class = std::enable_if_t <is_vector_or_vector_exp_v <Vec>>>
@@ -352,11 +349,5 @@ namespace neutrino::math {
             }
     };
 }
-#if defined(PPCAT_NX)
-#   undef PPCAT_NX
-#endif
-#if defined(PPCAT)
-#   undef PPCAT
-#endif
 
 #endif

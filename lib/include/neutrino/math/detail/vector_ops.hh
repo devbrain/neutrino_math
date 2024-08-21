@@ -11,15 +11,12 @@
 #include <neutrino/math/detail/vector_expr.hh>
 #include <neutrino/math/detail/scalar.hh>
 
-#if defined(PPCAT_NX)
-#   undef PPCAT_NX
-#endif
-#if defined(PPCAT)
-#   undef PPCAT
-#endif
+#if !defined(PPCAT)
 
 #define PPCAT_NX(A, B) A ## B
 #define PPCAT(A, B) PPCAT_NX(A, B)
+
+#endif
 
 namespace neutrino::math {
     // ================================================================================================================
@@ -526,11 +523,6 @@ namespace neutrino::math {
     };
 }
 
-#if defined(PPCAT_NX)
-#   undef PPCAT_NX
-#endif
-#if defined(PPCAT)
-#   undef PPCAT
-#endif
+
 
 #endif
