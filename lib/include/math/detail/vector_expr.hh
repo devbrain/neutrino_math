@@ -7,6 +7,7 @@
 
 #include <cstddef>
 #include <math/detail/traits.hh>
+#include <math/detail/temp_value.hh>
 #include <math/detail/vector_functors.hh>
 
 namespace neutrino::math {
@@ -29,43 +30,6 @@ namespace neutrino::math {
 
         template<typename T>
         using storage_type_t = typename storage_type <std::decay_t <T>, store_by_ref_v <T>>::type;
-
-
-
-        template<typename T>
-        class temp_value_holder {
-            private:
-                T value;
-
-            public:
-                temp_value_holder(temp_value_holder&& other) noexcept
-                    : value(std::move(other.value)) {
-                }
-
-                temp_value_holder(const temp_value_holder& other)
-                    : value(std::move(const_cast <temp_value_holder&>(other).value)) {
-                }
-
-                constexpr explicit temp_value_holder(T&& v)
-                    : value(std::move(v)) {
-                }
-
-                constexpr auto& operator[](std::size_t i) {
-                    return value[i];
-                }
-
-                constexpr const auto& operator[](std::size_t i) const {
-                    return value[i];
-                }
-
-                static constexpr size_t size() {
-                    if constexpr (is_scalar_v <T>) {
-                        return 1;
-                    } else {
-                        return T::size();
-                    }
-                }
-        };
     }
 
     template<class callable, class LHS, class RHS>
@@ -134,7 +98,7 @@ namespace neutrino::math {
     };
 
     template<typename T>
-    struct vector_size_traits <detail::temp_value_holder <T>> {
+    struct vector_size_traits <detail::vector_temp_value_holder <T>> {
         static constexpr size_t size() {
             return T::size();
         }
@@ -149,27 +113,27 @@ namespace neutrino::math {
             constexpr auto is_rhs_rvalue = std::is_rvalue_reference_v <decltype(rhs)>;
             constexpr auto is_lhs_rvalue = std::is_rvalue_reference_v <decltype(lhs)>;
 
-            constexpr auto is_rhs_vec = is_vector_v <RHS>;
-            constexpr auto is_lhs_vec = is_vector_v <LHS>;
+            constexpr auto is_rhs_vec = is_basic_math_object <RHS>;
+            constexpr auto is_lhs_vec = is_basic_math_object <LHS>;
 
             constexpr auto left_is_temp = is_lhs_rvalue && is_lhs_vec;
             constexpr auto right_is_temp = is_rhs_rvalue && is_rhs_vec;
             if constexpr (left_is_temp && right_is_temp) {
                 return binary_vector_expression{
                     callable,
-                    detail::temp_value_holder <std::decay_t <LHS>>(std::forward <LHS>(lhs)),
-                    detail::temp_value_holder <std::decay_t <RHS>>(std::forward <RHS>(rhs))
+                    temp_value_t<LHS>(std::forward <LHS>(lhs)),
+                    temp_value_t<RHS>(std::forward <RHS>(rhs))
                 };
             } else if constexpr (!left_is_temp && right_is_temp) {
                 return binary_vector_expression{
                     callable,
                     lhs,
-                    detail::temp_value_holder <std::decay_t <RHS>>(std::forward <RHS>(rhs))
+                    temp_value_t<RHS>(std::forward <RHS>(rhs))
                 };
             } else if constexpr (left_is_temp) {
                 return binary_vector_expression{
                     callable,
-                    detail::temp_value_holder <std::decay_t <LHS>>(std::forward <LHS>(lhs)),
+                    temp_value_t<RHS>(std::forward <LHS>(lhs)),
                     rhs
                 };
             } else {
@@ -183,12 +147,12 @@ namespace neutrino::math {
         template<class Callable, class LHS>
         auto make_unary_vector_expr(Callable* callable, LHS&& lhs) {
             constexpr auto is_lhs_rvalue = std::is_rvalue_reference_v <decltype(lhs)>;
-            constexpr auto is_lhs_vec = is_vector_v <LHS>;
+            constexpr auto is_lhs_vec = is_basic_math_object <LHS>;
 
             if constexpr (is_lhs_vec && is_lhs_rvalue) {
                 return unary_vector_expression{
                     callable,
-                    detail::temp_value_holder <std::decay_t <LHS>>(std::forward <LHS>(lhs))
+                    temp_value_t<LHS>(std::forward <LHS>(lhs))
                 };
             } else {
                 return unary_vector_expression{

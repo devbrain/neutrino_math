@@ -112,8 +112,20 @@ namespace neutrino::math {
     template<typename T, typename... Ts>
     constexpr bool is_all_same_type_v = std::conjunction_v<std::is_same<T, Ts>...>;
 
+    namespace detail {
+        template <std::size_t N, typename ...T>
+        struct first_type_helper {
+            using type = std::tuple_element_t <0, std::tuple <T...>>;
+        };
+
+        template <typename ...T>
+        struct first_type_helper <0, T...>{
+            using type = void;
+        };
+    }
+
     template<typename... T>
-    using first_type_t = std::tuple_element_t <0, std::tuple <T...>>;
+    using first_type_t = typename detail::first_type_helper<sizeof...(T), T...>::type;
 
     template<typename... Ts>
     constexpr bool is_all_same_v = is_all_same_type_v<first_type_t<Ts...>, Ts...>;

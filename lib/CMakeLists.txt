@@ -20,6 +20,9 @@ add_library(neutrino_math INTERFACE
         include/math/detail/matrix_iterator.hh
         include/math/detail/make_vector.hh
         include/math/detail/make_matrix.hh
+        include/math/detail/vector_temp_value.hh
+        include/math/detail/matrix_temp_value.hh
+        include/math/detail/temp_value.hh
 )
 
 add_library(neutrino::math ALIAS neutrino_math)

@@ -24,6 +24,37 @@ TEST_SUITE("Matrix test suite") {
         }
     }
 
+    TEST_CASE("Test constructor from rows") {
+        auto v1 = neutrino::math::make_vector(0, 1, 2, 3);
+        auto v2 = neutrino::math::make_vector(4, 5, 6, 7);
+        neutrino::math::matrix <int, 2, 4> m = make_matrix_from_rows(v1, v2);
+        int k = 0;
+        for (int r = 0; r < 2; r++) {
+            for (int c = 0; c < 4; c++) {
+                REQUIRE_EQ(k++, m(r,c));
+            }
+        }
+    }
+
+    TEST_CASE("Test constructor from cols") {
+        auto v1 = neutrino::math::make_vector(0, 1, 2, 3);
+        auto v2 = neutrino::math::make_vector(4, 5, 6, 7);
+        auto m = make_matrix_from_cols(v1, v2);
+        auto m2 = neutrino::math::make_matrix({
+            {0, 4},
+            {1, 5},
+            {2, 6},
+            {3, 7}
+        });
+
+        for (int r = 0; r < 4; r++) {
+            for (int c = 0; c < 2; c++) {
+                auto v = m(r,c);
+                REQUIRE_EQ(m2(r, c), v);
+            }
+        }
+    }
+
     TEST_CASE("test views") {
         neutrino::math::vector <int, 2> v{1, 2};
         neutrino::math::matrix <int, 1, 2> m = as_row_vector(v);

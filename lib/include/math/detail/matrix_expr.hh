@@ -7,9 +7,11 @@
 
 #include <math/matrix_fwd.hh>
 #include <math/detail/vector_expr.hh>
+#include <math/detail/temp_value.hh>
 
 
 namespace neutrino::math::detail {
+
     template<class Callable, class LHS, class RHS, std::size_t R, std::size_t C>
     class binary_matrix_expression : public matrix_expression_base <R, C> {
         storage_type_t <LHS> lhs;
@@ -273,24 +275,28 @@ namespace neutrino::math::detail {
         constexpr auto is_rhs_rvalue = std::is_rvalue_reference_v <decltype(rhs)>;
         constexpr auto is_lhs_rvalue = std::is_rvalue_reference_v <decltype(lhs)>;
 
-        constexpr auto is_rhs_vec = is_vector_v <RHS>;
-        constexpr auto is_lhs_vec = is_vector_v <LHS>;
+        constexpr auto is_rhs_vec = is_basic_math_object<RHS>;
+        constexpr auto is_lhs_vec = is_basic_math_object<LHS>;
 
         constexpr auto left_is_temp = is_lhs_rvalue && is_lhs_vec;
         constexpr auto right_is_temp = is_rhs_rvalue && is_rhs_vec;
         if constexpr (left_is_temp && right_is_temp) {
-            return binary_matrix_expression <Callable, LHS, RHS, R, C>{
-                detail::temp_value_holder <std::decay_t <LHS>>(std::forward <LHS>(lhs)),
-                detail::temp_value_holder <std::decay_t <RHS>>(std::forward <RHS>(rhs))
+            using lhs_t = temp_value_t<LHS>;
+            using rhs_t = temp_value_t<LHS>;
+            return binary_matrix_expression <Callable, lhs_t, rhs_t, R, C>{
+                lhs_t(std::forward <LHS>(lhs)),
+                rhs_t(std::forward <RHS>(rhs))
             };
         } else if constexpr (!left_is_temp && right_is_temp) {
-            return binary_matrix_expression <Callable, LHS, RHS, R, C>{
+            using rhs_t = temp_value_t<LHS>;
+            return binary_matrix_expression <Callable, LHS, rhs_t, R, C>{
                 lhs,
-                detail::temp_value_holder <std::decay_t <RHS>>(std::forward <RHS>(rhs))
+                rhs_t(std::forward <RHS>(rhs))
             };
         } else if constexpr (left_is_temp) {
-            return binary_matrix_expression <Callable, LHS, RHS, R, C>{
-                detail::temp_value_holder <std::decay_t <LHS>>(std::forward <LHS>(lhs)),
+            using lhs_t = temp_value_t<LHS>;
+            return binary_matrix_expression <Callable, lhs_t, RHS, R, C>{
+                lhs_t(std::forward <LHS>(lhs)),
                 rhs
             };
         } else {
@@ -303,11 +309,12 @@ namespace neutrino::math::detail {
     template<class Callable, class LHS, size_t R, size_t C>
     auto make_unary_matrix_expr(LHS&& lhs) {
         constexpr auto is_lhs_rvalue = std::is_rvalue_reference_v <decltype(lhs)>;
-        constexpr auto is_lhs_vec = is_vector_v <LHS>;
+        constexpr auto is_lhs_vec = is_basic_math_object<LHS>;
 
         if constexpr (is_lhs_vec && is_lhs_rvalue) {
-            return unary_matrix_expression <Callable, LHS, R, C>{
-                detail::temp_value_holder <std::decay_t <LHS>>(std::forward <LHS>(lhs))
+            using lhs_t = temp_value_t<LHS>;
+            return unary_matrix_expression <Callable, lhs_t, R, C>{
+                lhs_t(std::forward <LHS>(lhs))
             };
         } else {
             return unary_matrix_expression <Callable, LHS, R, C>{
@@ -319,11 +326,12 @@ namespace neutrino::math::detail {
     template<class LHS, size_t R, size_t C>
     auto make_view_vector_as_matrix_expr(LHS&& lhs) {
         constexpr auto is_lhs_rvalue = std::is_rvalue_reference_v <decltype(lhs)>;
-        constexpr auto is_lhs_vec = is_vector_v <LHS>;
+        constexpr auto is_lhs_vec = is_basic_math_object<LHS>;
 
         if constexpr (is_lhs_vec && is_lhs_rvalue) {
-            return vector_as_matrix_expression <LHS, R, C>{
-                detail::temp_value_holder <std::decay_t <LHS>>(std::forward <LHS>(lhs))
+            using lhs_t = temp_value_t<LHS>;
+            return vector_as_matrix_expression <lhs_t, R, C>{
+                lhs_t(std::forward <LHS>(lhs))
             };
         } else {
             return vector_as_matrix_expression <LHS, R, C>{
@@ -335,11 +343,12 @@ namespace neutrino::math::detail {
     template<class LHS, std::size_t R, std::size_t C, bool ByRow>
     auto make_view_matrix_as_vector_expr(LHS&& lhs, std::size_t axis) {
         constexpr auto is_lhs_rvalue = std::is_rvalue_reference_v <decltype(lhs)>;
-        constexpr auto is_lhs_vec = is_vector_v <LHS>;
+        constexpr auto is_lhs_vec = is_basic_math_object<LHS>;
 
         if constexpr (is_lhs_vec && is_lhs_rvalue) {
-            return matrix_as_vector_expression <LHS, R, C, ByRow>{
-                detail::temp_value_holder <std::decay_t <LHS>>(std::forward <LHS>(lhs)),
+            using lhs_t = temp_value_t<LHS>;
+            return matrix_as_vector_expression <lhs_t, R, C, ByRow>{
+                lhs_t(std::forward <LHS>(lhs)),
                 axis
             };
         } else {
@@ -352,11 +361,12 @@ namespace neutrino::math::detail {
     template<class LHS, size_t R, size_t C>
     auto make_transpose_matrix_expr(LHS&& lhs) {
         constexpr auto is_lhs_rvalue = std::is_rvalue_reference_v <decltype(lhs)>;
-        constexpr auto is_lhs_vec = is_vector_v <LHS>;
+        constexpr auto is_lhs_vec = is_basic_math_object<LHS>;
 
         if constexpr (is_lhs_vec && is_lhs_rvalue) {
-            return transpose_matrix_expression <LHS, C, R>{
-                detail::temp_value_holder <std::decay_t <LHS>>(std::forward <LHS>(lhs))
+            using lhs_t = temp_value_t<LHS>;
+            return transpose_matrix_expression <lhs_t, C, R>{
+                lhs_t(std::forward <LHS>(lhs))
             };
         } else {
             return transpose_matrix_expression <LHS, C, R>{
@@ -370,24 +380,28 @@ namespace neutrino::math::detail {
         constexpr auto is_rhs_rvalue = std::is_rvalue_reference_v <decltype(rhs)>;
         constexpr auto is_lhs_rvalue = std::is_rvalue_reference_v <decltype(lhs)>;
 
-        constexpr auto is_rhs_vec = is_vector_v <RHS>;
-        constexpr auto is_lhs_vec = is_vector_v <LHS>;
+        constexpr auto is_rhs_vec = is_basic_math_object<RHS>;
+        constexpr auto is_lhs_vec = is_basic_math_object<LHS>;
 
         constexpr auto left_is_temp = is_lhs_rvalue && is_lhs_vec;
         constexpr auto right_is_temp = is_rhs_rvalue && is_rhs_vec;
         if constexpr (left_is_temp && right_is_temp) {
-            return matrix_mul_expression <LHS, RHS, R, C, LHS_COLS, RHS_ROWS>{
-                detail::temp_value_holder <std::decay_t <LHS>>(std::forward <LHS>(lhs)),
-                detail::temp_value_holder <std::decay_t <RHS>>(std::forward <RHS>(rhs))
+            using lhs_t = temp_value_t<LHS>;
+            using rhs_t = temp_value_t<RHS>;
+            return matrix_mul_expression <lhs_t, rhs_t, R, C, LHS_COLS, RHS_ROWS>{
+                lhs_t(std::forward <LHS>(lhs)),
+                rhs_t(std::forward <RHS>(rhs))
             };
         } else if constexpr (!left_is_temp && right_is_temp) {
-            return matrix_mul_expression <LHS, RHS, R, C, LHS_COLS, RHS_ROWS>{
+            using rhs_t = temp_value_t<RHS>;
+            return matrix_mul_expression <LHS, rhs_t, R, C, LHS_COLS, RHS_ROWS>{
                 lhs,
-                detail::temp_value_holder <std::decay_t <RHS>>(std::forward <RHS>(rhs))
+                rhs_t(std::forward <RHS>(rhs))
             };
         } else if constexpr (left_is_temp) {
-            return matrix_mul_expression <LHS, RHS, R, C, LHS_COLS, RHS_ROWS>{
-                detail::temp_value_holder <std::decay_t <LHS>>(std::forward <LHS>(lhs)),
+            using lhs_t = temp_value_t<LHS>;
+            return matrix_mul_expression <lhs_t, RHS, R, C, LHS_COLS, RHS_ROWS>{
+                lhs_t(std::forward <LHS>(lhs)),
                 rhs
             };
         } else {

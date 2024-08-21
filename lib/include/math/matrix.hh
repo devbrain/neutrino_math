@@ -19,6 +19,14 @@ namespace neutrino::math {
         class const_matrix_iterator_proxy;
     }
 
+    namespace detail {
+        template<std::size_t R, std::size_t C, typename T, typename... E>
+        matrix <T, R, C> make_from_rows_proxy(const vector <E, C>&... rows);
+
+        struct from_rows_tag {
+        };
+    }
+
     template<typename E, std::size_t R, std::size_t C>
     class matrix : public matrix_ops <E, R, C> {
         public:
@@ -33,7 +41,14 @@ namespace neutrino::math {
                 : values{storage_t::template create(data, std::make_integer_sequence <int, R>{})} {
             }
 
-            auto operator()(std::size_t r, std::size_t c) const {
+            constexpr const auto& operator()(std::size_t r, std::size_t c) const {
+                if (r >= R) {
+                    throw std::out_of_range("matrix: Index out of range");
+                }
+                return values[r][c];
+            }
+
+            constexpr auto& operator()(std::size_t r, std::size_t c) {
                 if (r >= R) {
                     throw std::out_of_range("matrix: Index out of range");
                 }
@@ -81,9 +96,23 @@ namespace neutrino::math {
             [[nodiscard]] constexpr std::size_t get_columns_num() const {
                 return C;
             }
+
+        private:
+            template<std::size_t RR, std::size_t CC, typename TT, typename... EE>
+            friend matrix <TT, RR, CC> detail::make_from_rows_proxy(const vector <EE, CC>&... rows);
+
+            template<typename... T, class = std::enable_if_t <sizeof...(T) == R && is_all_same_v <T...>>>
+            constexpr explicit matrix([[maybe_unused]] detail::from_rows_tag, const vector <T, C>&... args)
+                : values{args...} {
+            }
     };
 
-
+    namespace detail {
+        template<std::size_t R, std::size_t C, typename T, typename... E>
+        matrix <T, R, C> make_from_rows_proxy(const vector <E, C>&... rows) {
+            return matrix <T, sizeof...(rows), C>(from_rows_tag{}, rows...);
+        }
+    }
 }
 
 #endif

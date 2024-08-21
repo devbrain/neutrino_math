@@ -111,8 +111,11 @@ namespace neutrino::math {
     namespace detail {
         template<typename E, std::size_t R, std::size_t C, bool ByRow>
         class matrix_iterator_proxy {
-            friend constexpr matrix_iterator_proxy<E, R, C, false> math::columns(matrix <E, R, C>& m);
-            friend constexpr matrix_iterator_proxy<E, R, C, true> math::rows(matrix <E, R, C>& m);
+            template<typename EE, std::size_t RR, std::size_t CC>
+            friend constexpr matrix_iterator_proxy<EE, RR, CC, ByRow> math::columns(matrix <EE, RR, CC>& m);
+
+            template<typename EE, std::size_t RR, std::size_t CC>
+            friend constexpr matrix_iterator_proxy<EE, RR, CC, ByRow> math::rows(matrix <EE, RR, CC>& m);
 
             public:
                 matrix_iterator <E, R, C, ByRow> begin() const {
@@ -133,8 +136,11 @@ namespace neutrino::math {
 
         template<typename E, std::size_t R, std::size_t C, bool ByRow>
         class const_matrix_iterator_proxy {
-            friend constexpr const_matrix_iterator_proxy<E, R, C, false> math::columns(const matrix <E, R, C>& m);
-            friend constexpr const_matrix_iterator_proxy<E, R, C, true> math::rows(const matrix <E, R, C>& m);
+            template<typename EE, std::size_t RR, std::size_t CC>
+            friend constexpr const_matrix_iterator_proxy<EE, RR, CC, ByRow> math::columns(const matrix <EE, RR, CC>& m);
+
+            template<typename EE, std::size_t RR, std::size_t CC>
+            friend constexpr const_matrix_iterator_proxy<EE, RR, CC, ByRow> math::rows(const matrix <EE, RR, CC>& m);
 
             public:
                 const_matrix_iterator <E, R, C, ByRow> begin() const {
